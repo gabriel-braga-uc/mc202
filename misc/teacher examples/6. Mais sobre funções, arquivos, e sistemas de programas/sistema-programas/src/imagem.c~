@@ -1,0 +1,96 @@
+#include "imagem.h"
+
+Imagem *CriaImagem(int nlin, int ncol, int num_bandas)
+{
+  Imagem *img = (Imagem *) calloc(1,sizeof(Imagem));
+  
+  img->banda = (Banda **) calloc(num_bandas,sizeof(Banda *));
+  for (int b=0; b < num_bandas; b++)
+    img->banda[b] = CriaBanda(nlin, ncol);
+  img->num_bandas = num_bandas;
+  img->nlin       = nlin;
+  img->ncol       = ncol;
+  
+  return(img);
+}
+
+void    DestroiImagem(Imagem **img)
+{
+  Imagem *aux = *img;
+
+  if (aux != NULL) {
+    for (int b=0; b < aux->num_bandas; b++)
+      DestroiBanda(&aux->banda[b]);
+    free(aux->banda);
+    free(aux);
+    (*img) = NULL;
+  }
+}
+    
+Imagem *LeImagemRGB(char *nomearq)
+{
+  FILE *fp=fopen(nomearq,"r");
+  Imagem *img = NULL;
+  char tipo[10];
+  int  nlin, ncol, max;
+  
+  /* Lê o cabeçário ASCII */
+  fscanf(fp,"%s\n",tipo);
+  fscanf(fp,"%d %d\n",&ncol,&nlin);
+  fscanf(fp,"%d\n",&max);
+  /* Lê os dados binários dos pixels */
+  int size = nlin*ncol*3;
+  unsigned char *dados = (unsigned char *)calloc(size,sizeof(unsigned char));
+  fread(dados,sizeof(unsigned char),size,fp);
+  /* Copia para a imagem com 3 bandas */
+  img = CriaImagem(nlin,ncol,3);
+  for (int p=0, q=0; p < size; p+=3, q++){
+    int x = q%ncol, y=q/ncol;    
+    img->banda[Vermelho]->val[y][x] = (float)dados[p];
+    img->banda[Verde]->val[y][x]    = (float)dados[p+1];
+    img->banda[Azul]->val[y][x]     = (float)dados[p+2];
+  }
+  fclose(fp);
+  free(dados);
+  return(img);
+}
+
+void GravaImagemRGB(Imagem *img, char *nomearq)
+{
+  FILE *fp=fopen(nomearq,"w");
+  
+  /* Grava o cabeçário ASCII */
+  fprintf(fp,"P6\n");
+  fprintf(fp,"%d %d\n",img->ncol,img->nlin);
+  fprintf(fp,"255\n");
+  /* Copia a imagem para o vetor de dados */
+  int size = img->nlin*img->ncol*img->num_bandas;
+  unsigned char *dados = (unsigned char *)calloc(size,sizeof(unsigned char));
+  for (int p=0, q=0; p < size; p+=3, q++){
+    int x = q%img->ncol, y=q/img->ncol;    
+    dados[p]   = (unsigned char)img->banda[Vermelho]->val[y][x];
+    dados[p+1] = (unsigned char)img->banda[Verde]->val[y][x];
+    dados[p+2] = (unsigned char)img->banda[Azul]->val[y][x];
+  }
+  /* Grava os dados binários dos pixels */
+  fwrite(dados,sizeof(unsigned char),size,fp);
+  fclose(fp);
+}
+
+/* Dada uma cor onde os componentes são passados de [0,255] e um
+   círculo, pinta este círculo na imagem */ 
+
+void DesenhaCirculo(Circulo *C, Imagem *img, int vermelho, int verde, int azul)
+{
+  for (int y=0; y < img->nlin; y++) 
+    for (int x=0; x < img->ncol; x++) {
+      /* se o pixel estiver no interior do círculo */
+      if (sqrtf(powf(x-C->centro.x,2)+powf(y-C->centro.y,2)) <= C->raio){	
+	img->banda[Vermelho]->val[y][x] = vermelho;
+	img->banda[Verde]->val[y][x]    = verde;
+	img->banda[Azul]->val[y][x]     = azul;
+      }
+    }
+}
+
+

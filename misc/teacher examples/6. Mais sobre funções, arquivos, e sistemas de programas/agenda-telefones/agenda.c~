@@ -1,0 +1,224 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
+#include "cadeias.h"
+
+/* Para compilar:
+
+gcc agenda.c cadeias.c -o agenda  
+
+*/
+
+typedef struct _pessoa {
+  char nome[100];    /* nome */
+  char telefone[20]; /* telefone 0XX-XX-XXXXXXXX */
+} Pessoa;
+
+typedef struct _agenda{
+  Pessoa *pessoa;      /* lista de pessoas */
+  int     tamanho; /* tamanho da agenda */ 
+} Agenda;
+  
+Agenda *CriaAgenda(int tamanho);
+void    DestroiAgenda(Agenda **agenda);
+Agenda *LeAgendaTexto(char *nomearq);
+void    GravaAgendaTexto(Agenda *agenda, char *nomearq);
+Agenda *LeAgendaBinario(char *nomearq);
+void    GravaAgendaBinario(Agenda *agenda, char *nomearq);
+bool    BuscaPessoaAtualizaTelefoneDisco(char *nomearq, char *nome, char *telefone);
+bool    BuscaPessoaAtualizaTelefoneMemoria(Agenda *agenda, char *nome, char *telefone);
+void    ImprimeAgenda(Agenda *agenda);
+
+Agenda *CriaAgenda(int tamanho)
+{
+  Agenda *agenda = (Agenda *)calloc(1,sizeof(Agenda));
+
+  agenda->pessoa  = (Pessoa *)calloc(tamanho,sizeof(Pessoa));
+  agenda->tamanho = tamanho;
+
+  return(agenda);
+}
+
+void DestroiAgenda(Agenda **agenda)
+{
+  if ((*agenda)!=NULL){
+    free((*agenda)->pessoa);
+    free(*agenda);
+    (*agenda) = NULL;
+  }
+}
+
+Agenda *LeAgendaTexto(char *nomearq)
+{
+  FILE *fp=fopen(nomearq,"r"); /* gera apontador para o arquivo no
+				  disco. */
+  Agenda *agenda = NULL;
+  
+  if (fp != NULL) {
+    int tamanho;
+    fscanf(fp,"%d\n",&tamanho);
+    agenda = CriaAgenda(tamanho);
+    for (int i=0; i < tamanho; i++){
+      char linha[200];
+      fscanf(fp,"%[^\n]s",linha); fscanf(fp,"\n");
+      char **partes = QuebraCadeia(linha,";");
+      sprintf(agenda->pessoa[i].nome,"%s",partes[1]);
+      sprintf(agenda->pessoa[i].telefone,"%s",partes[2]);
+      for (int j=0; j <= 2; j++)
+	free(partes[j]);
+      free(partes);
+    }
+    fclose(fp);
+  } else {
+    Erro("Arquivo %s inexistente","LeAgendaTexto",nomearq);
+  }
+
+  return(agenda);
+}
+
+void  GravaAgendaTexto(Agenda *agenda, char *nomearq)
+{
+  FILE *fp=fopen(nomearq,"w"); /* gera apontador para arquivo no
+				  disco. */
+  if (fp != NULL) {
+    fprintf(fp,"%d\n",agenda->tamanho);
+    for (int i=0; i < agenda->tamanho; i++){
+      fprintf(fp,"%s;%s\n",agenda->pessoa[i].nome,agenda->pessoa[i].telefone);
+    }
+    fclose(fp);
+  } else {
+    Erro("Gravação do arquivo %s não permitida","GravaAgendaTexto",nomearq);
+  }
+
+}
+
+Agenda *LeAgendaBinario(char *nomearq)
+{
+  FILE *fp=fopen(nomearq,"rb"); /* gera apontador para o arquivo no
+				  disco. */
+  Agenda *agenda = NULL;
+  
+  if (fp != NULL) {
+    int tamanho;
+    fread(&tamanho,sizeof(int),1,fp);
+    agenda = CriaAgenda(tamanho);
+    for (int i=0; i < tamanho; i++){
+      fread(&agenda->pessoa[i],sizeof(Pessoa),1,fp);
+    }
+    fclose(fp);
+  } else {
+    Erro("Arquivo %s inexistente","LeAgendaBinario",nomearq);
+  }
+  
+  return(agenda);
+}
+
+void GravaAgendaBinario(Agenda *agenda, char *nomearq)
+{
+  FILE *fp=fopen(nomearq,"wb"); /* gera apontador para o arquivo no
+				  disco. */
+  if (fp != NULL) {
+    fwrite(&agenda->tamanho,sizeof(int),1,fp);
+    for (int i=0; i < agenda->tamanho; i++){
+      fwrite(&agenda->pessoa[i],sizeof(Pessoa),1,fp);
+    }
+    fclose(fp);
+  } else {
+    Erro("Gravação do arquivo %s não permitida","GravaAgendaBinario",nomearq);
+  }
+}
+
+bool BuscaPessoaAtualizaTelefoneDisco(char *nomearq, char *nome, char *telefone)
+{
+  FILE *fp = fopen(nomearq,"r+");
+  
+  if (fp != NULL) {
+    int tamanho;
+    fread(&tamanho,sizeof(int),1,fp);
+    Pessoa pessoa;
+    for (int i=0; i < tamanho; i++){
+      fread(&pessoa,sizeof(Pessoa),1,fp);
+      if (CadeiasIguais(pessoa.nome,nome)){
+	sprintf(pessoa.telefone,"%s",telefone);
+	fseek(fp,-sizeof(Pessoa),SEEK_CUR); /* retorna o apontador para o início do
+					       registro lido */
+	fwrite(&pessoa,sizeof(Pessoa),1,fp); /* atualiza o registro */
+	fclose(fp);
+	return(true);
+      }
+    }
+  } else {
+    Erro("Arquivo %s inexistente","BuscaPessoaAtualizaTelefoneDisco",nomearq);
+  }
+  
+  return(false);
+}
+
+bool BuscaPessoaAtualizaTelefoneMemoria(Agenda *agenda, char *nome, char *telefone)
+{
+  for (int i=0; i < agenda->tamanho; i++){
+    if (CadeiasIguais(agenda->pessoa[i].nome,nome)){
+      sprintf(agenda->pessoa[i].telefone,"%s",telefone);
+      return(true);
+    }
+  }
+  return(false);
+}
+
+void ImprimeAgenda(Agenda *agenda)
+{
+  for (int i=0; i < agenda->tamanho; i++) 
+    printf("%s %s\n",agenda->pessoa[i].nome,agenda->pessoa[i].telefone);
+}
+
+int main(int argc, char **argv)
+{
+  Agenda *agenda = NULL;
+  char nome[100];
+  char telefone[20];
+  
+  if (argc != 3)
+    Erro("%s <nome do arquivo> <texto/binario>","main",argv[0]);
+
+  if (CadeiasIguais(argv[2],"texto")){
+    agenda = LeAgendaTexto(argv[1]);
+    ImprimeAgenda(agenda);
+
+    printf("Entre com um nome para atualizar o telefone: ");
+    scanf("%[^\n]s",nome);
+    setbuf(stdin,NULL);
+    printf("Entre com o seu novo telefone: ");
+    scanf("%[^\n]s",telefone);
+    setbuf(stdin,NULL);
+
+    if (BuscaPessoaAtualizaTelefoneMemoria(agenda,nome,telefone))
+      printf("Atualização bem sucedida\n");
+
+    GravaAgendaTexto(agenda, argv[1]);
+  } else {
+    if (CadeiasIguais(argv[2],"binario")){
+      agenda = LeAgendaBinario(argv[1]);
+      ImprimeAgenda(agenda);
+      printf("Entre com um nome para atualizar o telefone: ");
+      scanf("%[^\n]s",nome);
+      setbuf(stdin,NULL);
+      printf("Entre com o seu novo telefone: ");
+      scanf("%[^\n]s",telefone);
+      setbuf(stdin,NULL);
+      
+      /* if (BuscaPessoaAtualizaTelefoneMemoria(agenda,nome,telefone)) */
+      /* 	printf("Atualização bem sucedida\n"); */
+      /* GravaAgendaBinario(agenda, argv[1]); */
+
+      if (BuscaPessoaAtualizaTelefoneDisco(argv[1],nome,telefone))
+	printf("Atualização bem sucedida\n");
+ 
+    } else {
+ 	Erro("Tipo %s de arquivo inválido","main",argv[2]);    
+    }
+  }
+  
+  DestroiAgenda(&agenda);
+  
+  return(0);
+}
