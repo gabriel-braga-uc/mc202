@@ -12,7 +12,7 @@ int **CriaMatrizInt(int nlin, int ncol)
   return(m);
 }
 int * MAX(int * N, int ** A){
-    int * respostas = calloc(3, sizeof(int));
+    int * respostas =(int*)calloc(3, sizeof(int));
     int k, l, c;
     int biggest = 0;
     for(int i = 0; i < *N; i++){
