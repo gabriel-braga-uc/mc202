@@ -5,9 +5,12 @@
 
 void Troca(int *x, int *y)
 {
-  *x = *x + *y;
-  *y = *x - *y;
-  *x = *x - *y;
+  int tmp = *x;
+  *x = *y;
+  *y = tmp;
+  /* *x = *x + *y; */
+  /* *y = *x - *y; */
+  /* *x = *x - *y; */
 }
 
 int Particao(int *A, int p, int q)

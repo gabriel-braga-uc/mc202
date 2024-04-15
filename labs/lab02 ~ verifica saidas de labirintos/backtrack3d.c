@@ -1,19 +1,19 @@
 #include<stdio.h>
-#include"cadeias.h"
-
+#include<stdbool.h>
+#include<stdlib.h>
 /* gcc backtrack.c cadeias.c -o backtrack */
 
 /* Busca a saída de um labirinto a partir de uma posição inicial,
-   andando com vizinhança-4. As posições são de três tipos: ' ' -
+   andando com vizinhança-6. As posições são de três tipos: ' ' -
    válida, 'X' - inválida, e 'S' - saída. */
 
 typedef struct _ponto {
-  int x, y;
+  int x, y, z;
 } Ponto;
 
 typedef struct _labirinto {
-  char **Posicao;
-  int nx, ny;
+  char ***Posicao;
+  int nx, ny, nz;
   Ponto entrada, saida;
 } Labirinto;
 
@@ -22,10 +22,16 @@ Labirinto *LeLabirinto(char *nomearq)
   FILE *fp = fopen(nomearq,"r");
   Labirinto *L = (Labirinto *)calloc(1,sizeof(Labirinto));
   
-  fscanf(fp,"%d %d\n",&L->nx,&L->ny);
-  L->Posicao = (char **)calloc(L->ny,sizeof(char *));
-  for (int y=0; y < L->ny; y++) 
-    L->Posicao[y] = (char *)calloc(L->nx,sizeof(char ));
+  fscanf(fp, "%d %d %d\n", &L->nx, &L->ny, &L->nz);
+  L->Posicao = (char ***)calloc(L->nz,sizeof(char **));
+    for(int z = 0; z < L->nz; z++){
+      L->Posicao[z] = (char **)calloc(L->ny, sizeof(char*));
+      for(int y = 0; y < L->ny; y++){
+        L->Posicao[z][y] = (char *)calloc(L->nx, sizeof(char));
+      }
+    }
+
+  //PARADA, A CIMA CONVERTIDO PRA 3D, ABAIXO AINDA NÃO
 
   for (int y=0; y < L->ny; y++){ 
     for (int x=0; x < L->nx; x++) {
@@ -105,10 +111,6 @@ bool Backtrack(Labirinto *L, Ponto P)
 int main(int argc, char **argv)
 {
   Labirinto *L = NULL;
-  
-  if (argc != 2){
-    Erro("%s <arquivo texto do labirinto>","main",argv[0]); 
-  }
   
   L = LeLabirinto(argv[1]);
 

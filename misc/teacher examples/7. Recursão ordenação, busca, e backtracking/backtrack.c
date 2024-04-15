@@ -63,6 +63,8 @@ bool Backtrack(Labirinto *L, Ponto P)
   bool res = false;
 
 
+
+
   return(res);
 }
 

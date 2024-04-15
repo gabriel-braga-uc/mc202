@@ -1,8 +1,6 @@
 #include<stdio.h>
 #include"cadeias.h"
 
-/* gcc fatorial.c cadeias.c -o fatorial */
-
 /* Assumindo que n >= 0 */
 
 long double fatorial_direta_fraca(unsigned long n){
@@ -58,5 +56,6 @@ int main(int argc, char **argv)
   CadeiaParaNumero(argv[1],"unsigned long",&n);
   printf("Fatorial(%lu) = %LE\n", n, fatorial_direta_fraca(n));
   printf("Fatorial(%lu) = %LE\n", n, fatorial(n));
+
   return(0);
 }
