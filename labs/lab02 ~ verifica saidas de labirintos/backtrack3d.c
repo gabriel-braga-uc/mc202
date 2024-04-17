@@ -67,24 +67,24 @@ void DestroiLabirinto(Labirinto **L)
     }
   }
 }
-//PARADA, A CIMA CONVERTIDO PRA 3D, ABAIXO AINDA NÃO
 bool Backtrack(Labirinto *L, Ponto P)
 {
   bool res = false;
-  
-  if ((P.y == L->saida.y)&&(P.x == L->saida.x)) { 
+  if ((P.z == L->saida.z)&&(P.y == L->saida.y)&&(P.x == L->saida.x)) { 
     res = true; /* solução encontrada */
   } else { /* gera candidatos */
     Ponto *C = (Ponto *)calloc(4,sizeof(Ponto));
-    C[0].x = P.x - 1; C[0].y = P.y;
-    C[1].x = P.x + 1; C[1].y = P.y;
-    C[2].x = P.x;     C[2].y = P.y - 1;
-    C[3].x = P.x;     C[3].y = P.y + 1;
+    C[0].x = P.x - 1; C[0].y = P.y; C[0].z = P.z;
+    C[1].x = P.x + 1; C[1].y = P.y; C[1].z = P.z;
+    C[2].x = P.x; C[2].y = P.y - 1; C[2].z = P.z;
+    C[3].x = P.x; C[3].y = P.y + 1; C[3].z = P.z;
+    C[4].x = P.x; C[4].y = P.y; C[4].z = P.z - 1;
+    C[5].x = P.x; C[5].y = P.y; C[5].z = P.z + 1;
 
     /* Armazena a informação da posição atual para recuperar ela
        depois */
-    char valor_original = L->Posicao[P.y][P.x];
-    L->Posicao[P.y][P.x] = 'X'; /* evita pai e filho se visitarem
+    char valor_original = L->Posicao[P.z][P.y][P.x];
+    L->Posicao[P.z][P.y][P.x] = 'X'; /* evita pai e filho se visitarem
 				   indefinidamente. Mais ainda,
 				   permite tratar caminhos cíclicos,
 				   pois ao retornar para um ponto já
@@ -95,18 +95,18 @@ bool Backtrack(Labirinto *L, Ponto P)
 				   recuperado. */	    
     /* processa os candidatos e a condição (res != true) evita visitar
        todas as posições */
-    for (int i=0; (i < 4) && (res != true); i++) {
+
+       //PARADA, A CIMA CONVERTIDO PRA 3D, ABAIXO AINDA NÃO
+    for (int i=0; (i < 7) && (res != true); i++) {
       /* verifica as restrições */
-      if ((C[i].x >= 0)&&(C[i].x < L->nx)&& 
-	  (C[i].y >= 0)&&(C[i].y < L->ny)){
-	if (L->Posicao[C[i].y][C[i].x] != 'X'){ /* restrição */
-	  //printf("Processa (%d,%d)=%c a partir de (%d,%d)\n",C[i].x,C[i].y,L->Posicao[C[i].y][C[i].x],P.x,P.y);
-	  res = Backtrack(L,C[i]);
-	}
+      if ((C[i].x >= 0)&&(C[i].x < L->nx)&&(C[i].y >= 0)&&(C[i].y < L->ny)&&(C[i].z >= 0)&&(C[i].z < L->nz)){
+	      if (L->Posicao[C[i].z][C[i].y][C[i].x] != 'X'){ /* restrição */
+	        //printf("Processa (%d,%d)=%c a partir de (%d,%d)\n",C[i].x,C[i].y,L->Posicao[C[i].y][C[i].x],P.x,P.y);
+	        res = Backtrack(L,C[i]);
+	      }
       }
     }
-    L->Posicao[P.y][P.x] = valor_original; /* retorna ao valor
-					      original */
+    L->Posicao[P.z][P.y][P.x] = valor_original; /* retorna ao valor original */
     free(C);
   }
   return(res);
