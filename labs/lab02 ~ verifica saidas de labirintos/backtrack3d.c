@@ -30,40 +30,44 @@ Labirinto *LeLabirinto(char *nomearq)
         L->Posicao[z][y] = (char *)calloc(L->nx, sizeof(char));
       }
     }
-
-  //PARADA, A CIMA CONVERTIDO PRA 3D, ABAIXO AINDA NÃO
-
-  for (int y=0; y < L->ny; y++){ 
-    for (int x=0; x < L->nx; x++) {
-      fscanf(fp,"%c",&L->Posicao[y][x]);
-      if (L->Posicao[y][x]=='E'){
-	L->entrada.x= x; L->entrada.y= y;
-	L->Posicao[y][x]='P';
-      } else {
-	if (L->Posicao[y][x]=='S'){
-	  L->saida.x= x; L->saida.y= y;
-	  L->Posicao[y][x]='P';
-	}
+  for(int z=0; z <L->nz; z++){
+    for (int y=0; y < L->ny; y++){ 
+      for (int x=0; x < L->nx; x++) {
+        fscanf(fp,"%c",&L->Posicao[z][y][x]);
+        if (L->Posicao[z][y][x]=='E'){
+	        L->entrada.x= x; L->entrada.y= y;
+	        L->Posicao[z][y][x]='P';
+        } else {
+	        if (L->Posicao[z][y][x]=='S'){
+	          L->saida.x=x;
+            L->saida.y=y;
+            L->saida.z=z;
+	          L->Posicao[z][y][x]='P';
+	        }
+        }
       }
+      fscanf(fp,"\n");
     }
-    fscanf(fp,"\n");
   }
 
   fclose(fp);
   return(L);
 }
-
 void DestroiLabirinto(Labirinto **L)
 {
   if ((*L)!=NULL){
-    for (int y=0; y < (*L)->ny; y++)
-      free((*L)->Posicao[y]);
-    free((*L)->Posicao);
-    free((*L));
-    (*L) = NULL;
+    for(int z=0; z < (*L)->nz; z++){
+      for (int y=0; y < (*L)->ny; y++){
+        free((*L)->Posicao[z][y]);
+        free((*L)->Posicao[z]);
+        free((*L)->Posicao);
+        free((*L));
+        (*L) = NULL;
+      }
+    }
   }
 }
-
+//PARADA, A CIMA CONVERTIDO PRA 3D, ABAIXO AINDA NÃO
 bool Backtrack(Labirinto *L, Ponto P)
 {
   bool res = false;
