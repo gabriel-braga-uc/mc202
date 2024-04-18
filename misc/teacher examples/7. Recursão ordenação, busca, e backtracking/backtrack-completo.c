@@ -24,7 +24,7 @@ Labirinto *LeLabirinto(char *nomearq)
   
   fscanf(fp,"%d %d\n",&L->nx,&L->ny);
   L->Posicao = (char **)calloc(L->ny,sizeof(char *));
-  for (int y=0; y < L->ny; y++) 
+  for (int y=0; y < L->ny; y++)
     L->Posicao[y] = (char *)calloc(L->nx,sizeof(char ));
 
   for (int y=0; y < L->ny; y++){ 
