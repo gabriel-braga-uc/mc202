@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include "node_functions.h"
 
-int main(){
-    node * P = criaNodeSimlpes();
+int main() {
+    node* P = criaNodeSimlpes();
     insereCaudaListaSimples(P);
     insereCaudaListaSimples(P);
     insereCaudaListaSimples(P);
