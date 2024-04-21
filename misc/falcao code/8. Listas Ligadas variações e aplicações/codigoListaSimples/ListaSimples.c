@@ -10,7 +10,7 @@ bool ListaSimplesVazia(ListaSimples *inicio)
 
 void ImprimeListaSimples(ListaSimples *inicio)
 {
-  
+
   while (!ListaSimplesVazia(inicio)){
     printf("%d -->",inicio->elem);
     inicio = inicio->prox; 
@@ -51,16 +51,21 @@ NoListaSimples *CriaNoSimples(int elem)
 
 void InsereInicioListaSimples(ListaSimples **inicio, int elem)
 {
-
-  /* preencher */
-
+    while((*inicio)->prox != NULL){
+       inicio = &((*inicio)->prox);
+    }
+    NoListaSimples * inserindo = criaNoSimples(elem);
+    (*inicio)->prox = inserindo;
 }
 
 void InsereFimListaSimples(ListaSimples **inicio, int elem)
 {
-
-    /* preencher */
-
+    while((*inicio)->prox != NULL){
+       inicio = &((*inicio)->prox);
+    }
+    ListaSimples * inserindo = (ListaSimples *)calloc(1, sizeof(ListaSimples));
+    inserindo->elem = elem;
+    (*inicio)->prox = inserindo;
 }
 
 bool InsereElementoAntesDaChaveListaSimples(ListaSimples **inicio, int elem, int chave)
@@ -71,7 +76,14 @@ bool InsereElementoAntesDaChaveListaSimples(ListaSimples **inicio, int elem, int
 
 bool  RemoveInicioListaSimples(ListaSimples **inicio, int *elem)
 {
-      /* preencher */
+  if(ListaSimplesVazia(&(*inicio)) == true){
+    return(false);
+  } else {
+    NoListaSimples * P = *inicio;
+    *inicio = ((*inicio)->prox);
+    free(P);
+    return(true);
+  }
 }
 
 bool RemoveElementoListaSimples(ListaSimples **inicio, int elem)
@@ -81,13 +93,21 @@ bool RemoveElementoListaSimples(ListaSimples **inicio, int elem)
 
 bool  RemoveFimListaSimples(ListaSimples **inicio, int *elem)
 {
-      /* preencher */
+  if(ListaSimplesVazia(&(*inicio)) == true){
+    return(false);
+  } else {
+  while((*inicio)->prox != NULL){
+    inicio = &((*inicio)->prox);
+  }
+  free((*inicio)->prox);
+  (*inicio)->prox = NULL;
+    return(true);
+  }
 }
 
 void DestroiListaSimples(ListaSimples **inicio)
 {
   int elem;
-
   while(!ListaSimplesVazia(*inicio))
     RemoveInicioListaSimples(inicio,&elem);
 

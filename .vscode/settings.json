@@ -4,6 +4,7 @@
         "stdio.h": "c",
         "string.h": "c",
         "arrays.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "listasimples.h": "c"
     }
 }
