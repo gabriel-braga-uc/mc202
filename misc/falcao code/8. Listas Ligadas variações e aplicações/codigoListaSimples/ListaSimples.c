@@ -83,6 +83,7 @@ bool  RemoveInicioListaSimples(ListaSimples **inicio, int *elem)
     *inicio = ((*inicio)->prox);
     free(P);
     return(true);
+    //Falta colocar o *elem (retornar o que deletou pra variavel na main) e o false (vazio) e true (deletou) no return()
   }
 }
 
@@ -99,9 +100,10 @@ bool  RemoveFimListaSimples(ListaSimples **inicio, int *elem)
   while((*inicio)->prox != NULL){
     inicio = &((*inicio)->prox);
   }
+  *elem = (*inicio)->elem;
   free((*inicio)->prox);
   (*inicio)->prox = NULL;
-    return(true);
+  return(true);
   }
 }
 
