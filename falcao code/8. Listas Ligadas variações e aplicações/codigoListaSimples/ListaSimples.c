@@ -100,7 +100,7 @@ bool RemoveElementoListaSimples(ListaSimples** inicio, int elem)
   /* preencher */
 }
 
-bool RemoveFimListaSimples(ListaSimples** inicio, int* elem)
+bool RemoveFimListaSimples(ListaSimples** inicio, int* elem)ª
 {
   if (ListaSimplesVazia(&(*inicio)) == true)
   {
