@@ -7,7 +7,6 @@ bool ListaSimplesVazia(ListaSimples* inicio)
   else
     return (false);
 }
-
 void ImprimeListaSimples(ListaSimples* inicio)
 {
 
@@ -18,10 +17,14 @@ void ImprimeListaSimples(ListaSimples* inicio)
   }
 }
 
+// VVV ??? para que serve o pos e ant?? falta fazer
 bool BuscaElementoListaSimples(ListaSimples* inicio, int elem, NoListaSimples** pos, NoListaSimples** ant)
 {
-
-  /* preencher */
+  if(ListaSimplesVazia(&(*inicio) == true)){
+    return(false);
+  } else {
+    while((*inicio)->prox != elem);
+  }
 }
 
 bool BuscaUltimoElementoListaSimples(ListaSimples* inicio, NoListaSimples** pos, NoListaSimples** ant)
@@ -41,7 +44,6 @@ bool BuscaUltimoElementoListaSimples(ListaSimples* inicio, NoListaSimples** pos,
 
   return (true);
 }
-
 NoListaSimples* CriaNoSimples(int elem)
 {
   NoListaSimples* no = (NoListaSimples*)calloc(1, sizeof(NoListaSimples));
@@ -51,7 +53,6 @@ NoListaSimples* CriaNoSimples(int elem)
 
   return (no);
 }
-
 void InsereInicioListaSimples(ListaSimples** inicio, int elem)
 {
   while ((*inicio)->prox != NULL)
@@ -61,7 +62,6 @@ void InsereInicioListaSimples(ListaSimples** inicio, int elem)
   NoListaSimples* inserindo = criaNoSimples(elem);
   (*inicio)->prox = inserindo;
 }
-
 void InsereFimListaSimples(ListaSimples** inicio, int elem)
 {
   while ((*inicio)->prox != NULL)
@@ -73,12 +73,21 @@ void InsereFimListaSimples(ListaSimples** inicio, int elem)
   (*inicio)->prox = inserindo;
 }
 
+// VVV ??? chave é indice ou elemento a procurar? (fazendo como elemento) ja funciona
 bool InsereElementoAntesDaChaveListaSimples(ListaSimples** inicio, int elem, int chave)
 {
-
-  /* preencher */
+  if(ListaSimplesVazia(&(*inicio) == true)){
+    return(false);
+  }
+  ListaSimples* inserindo = CriaNoSimples(elem);
+  while((*inicio)->elem != elem){
+    *inicio = (*inicio)->prox;
+  }
+  inserindo->prox = (*inicio)->prox;
+  (*inicio)->prox = inserindo;
 }
 
+// VVV falta fazer
 bool RemoveInicioListaSimples(ListaSimples** inicio, int* elem)
 {
   if (ListaSimplesVazia(&(*inicio)) == true)
@@ -97,10 +106,20 @@ bool RemoveInicioListaSimples(ListaSimples** inicio, int* elem)
 
 bool RemoveElementoListaSimples(ListaSimples** inicio, int elem)
 {
-  /* preencher */
+  if (ListaSimplesVazia(&(*inicio)) == true) {
+    return(false);
+  }
+  else {
+    while ((*inicio)->elem != elem) {
+      inicio = &((*inicio)->prox);
+    }
+    ListaSimples* aux = *inicio;
+    *inicio = (*inicio)->prox;
+    free(aux);
+    return(true);
+  }
 }
-
-bool RemoveFimListaSimples(ListaSimples** inicio, int* elem)ª
+bool RemoveFimListaSimples(ListaSimples** inicio, int* elem)
 {
   if (ListaSimplesVazia(&(*inicio)) == true)
   {
