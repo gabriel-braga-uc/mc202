@@ -28,8 +28,7 @@ void removeInicio(NoSimples** inicio) {
 }
 
 void insereNoSimplesFinal(NoSimples** inicio, int x) {
-    while ((*inicio)->prox != NULL)
-    {
+    while ((*inicio)->prox != NULL) {
         inicio = &((*inicio)->prox);
     }
     NoSimples* inserindo = criaNoSimples(x);
@@ -50,14 +49,11 @@ bool ListaSimplesVazia(NoSimples* inicio) {
 }
 
 bool RemoveFimListaSimples(NoSimples** inicio, int* elem) {
-    if (ListaSimplesVazia(inicio) == true)
-    {
+    if (ListaSimplesVazia(inicio) == true) {
         return (false);
     }
-    else
-    {
-        while ((*inicio)->prox != NULL)
-        {
+    else {
+        while ((*inicio)->prox != NULL) {
             inicio = &((*inicio)->prox);
         }
         *elem = (*inicio)->content;
