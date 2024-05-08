@@ -5,6 +5,8 @@
         "string.h": "c",
         "arrays.h": "c",
         "stdlib.h": "c",
-        "listasimples.h": "c"
+        "listasimples.h": "c",
+        "stdbool.h": "c",
+        "stdarg.h": "c"
     }
 }

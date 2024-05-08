@@ -103,11 +103,12 @@ Imagem *LeImagem(char const *nomearquivo)
 }
 
 // Função para verificar se Lista Ligada Simples possui Nó
-bool ListaSimplesVazia(ListaSimples *inicio)
-{
-    // Área do código
-
-    // Fim da área do código
+bool ListaSimplesVazia(ListaSimples *inicio){
+    if(inicio == NULL){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 // Função para buscar ultimo Nó dentro de uma Lista Ligada Simples
@@ -119,35 +120,35 @@ bool BuscaUltimoElementoListaSimples(ListaSimples *inicio, NoListaSimples **pos,
 }
 
 // Função para criar um novo Nó na Lista Ligada
-NoListaSimples *CriaNoSimples(int elem)
-{
-    // Área do código
-
-    // Fim da área do código
+NoListaSimples *CriaNoSimples(int elem){
+    ListaSimples * p = (ListaSimples*)calloc(1, sizeof(ListaSimples));
+    p->valor = elem;
+    p->proximo = NULL;
+    return p;
 }
 
 // Função para inserir um novo Nó depois do último Nó presente na Lista Ligada
-void InserirElementoNoFimLista(ListaSimples **inicio, int valor)
-{
-    // Área do código
-
-    // Fim da área do código
+void InserirElementoNoFimLista(ListaSimples **inicio, int valor){
+    while((*inicio)->proximo != NULL){
+        inicio = &((*inicio)->proximo);
+    }
+    (*inicio)->proximo = CriaNoSimples(valor);
 }
 
 // Função para remover primeiro Nó na Lista Ligada
-bool RemoveInicioListaSimples(ListaSimples **inicio, int *elem)
-{
-    // Área do código
-
-    // Fim da área do código
+bool RemoveInicioListaSimples(ListaSimples **inicio, int *elem){
+    NoListaSimples *p = *inicio;
+    *elem = (*inicio)->valor;
+    *inicio = (*inicio)->proximo; 
+    free(p);
+    return(true);
 }
 
 // Função para esvaziar a Lista Ligada
-void DestroiListaLigada(ListaSimples **inicio)
-{
-    // Área do código
-
-    // Fim da área do código
+void DestroiListaLigada(ListaSimples **inicio){
+  int elem;
+  while (!ListaSimplesVazia(*inicio))
+    RemoveInicioListaSimples(inicio, &elem);
 }
 
 // Função para desalocar a struct Imagem da memória
