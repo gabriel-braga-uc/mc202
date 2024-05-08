@@ -11,7 +11,7 @@ typedef struct no_lista_simples{
 // IMPLEMENTAÇÕES (5/12) 
 
 /*1*/   bool ListaSimplesVazia(ListaSimples *inicio);
-//*2*/   bool BuscaUltimoElementoListaSimples(ListaSimples *inicio, NoListaSimples **pos, NoListaSimples **ant);
+/*2*/   bool BuscaUltimoElementoListaSimples(ListaSimples *inicio, NoListaSimples **pos, NoListaSimples **ant);
 /*3*/   NoListaSimples *CriaNoSimples(int elem);
 /*4*/   void InserirElementoNoFimLista(ListaSimples **inicio, int valor);
 /*5*/   bool RemoveInicioListaSimples(ListaSimples **inicio, int *elem);
@@ -55,10 +55,36 @@ bool RemoveInicioListaSimples(ListaSimples **inicio, int *elem){
 }
 //6 destroi lista
 void DestroiListaLigada(ListaSimples **inicio){
-  int elem;
-  while (!ListaSimplesVazia(*inicio))
-    RemoveInicioListaSimples(inicio, &elem);
+    int elem;
+    while (!ListaSimplesVazia(*inicio))
+        RemoveInicioListaSimples(inicio, &elem);
 }
+//2 Busca ultimo elemento
+bool BuscaUltimoElementoListaSimples(ListaSimples *inicio, NoListaSimples **pos, NoListaSimples **ant){
+    *pos = inicio;
+    *ant = NULL;
+    if (ListaSimplesVazia(inicio))
+        return(false);
+    while (((*pos)->proximo != NULL)){ /* busca o ultimo elemento */
+        (*ant) = (*pos);
+        (*pos) = (*pos)->proximo;
+    }
+    return(true);
+}
+
+
+bool BuscaElementoListaSimples(ListaSimples *inicio, int elem, NoListaSimples **pos, NoListaSimples **ant){
+    *ant = NULL; *pos = inicio;
+    while (!ListaSimplesVazia(*pos)){
+        if ((*pos)->valor == elem){
+          return(true);
+        } 
+    *ant = (*pos);
+    *pos = (*pos)->proximo;    
+    }
+    return(false);
+}
+
 
 int main(){
     ListaSimples * p = CriaNoSimples(1);
@@ -66,6 +92,9 @@ int main(){
     InserirElementoNoFimLista(&p, 3);
     InserirElementoNoFimLista(&p, 4);
     InserirElementoNoFimLista(&p, 5);
+    ListaSimples *pos, *ant;
+    bool found = BuscaElementoListaSimples(p, 4, &pos, &ant);
+    bool found2 = BuscaUltimoElementoListaSimples(p, &pos, &ant);
     int removido = RemoveInicioListaSimples(&p, &removido);
     DestroiListaLigada(&p);
     return 0;
