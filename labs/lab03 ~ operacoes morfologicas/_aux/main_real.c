@@ -112,11 +112,16 @@ bool ListaSimplesVazia(ListaSimples *inicio){
 }
 
 // Função para buscar ultimo Nó dentro de uma Lista Ligada Simples
-bool BuscaUltimoElementoListaSimples(ListaSimples *inicio, NoListaSimples **pos, NoListaSimples **ant)
-{
-    // Área do código
-
-    // Fim da área do código
+bool BuscaUltimoElementoListaSimples(ListaSimples *inicio, NoListaSimples **pos, NoListaSimples **ant){
+    *pos = inicio;
+    *ant = NULL;
+    if (ListaSimplesVazia(inicio))
+        return(false);
+    while (((*pos)->proximo != NULL)){ /* busca o ultimo elemento */
+        (*ant) = (*pos);
+        (*pos) = (*pos)->proximo;
+    }
+    return(true);
 }
 
 // Função para criar um novo Nó na Lista Ligada

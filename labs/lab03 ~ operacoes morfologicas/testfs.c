@@ -6,6 +6,7 @@ typedef struct no_lista_simples{
     int valor;
     struct no_lista_simples *proximo;
 } ListaSimples, NoListaSimples;
+ListaSimples *noAtual = NULL;
 
 
 // IMPLEMENTAÇÕES (5/12) 
@@ -16,7 +17,7 @@ typedef struct no_lista_simples{
 /*4*/   void InserirElementoNoFimLista(ListaSimples **inicio, int valor);
 /*5*/   bool RemoveInicioListaSimples(ListaSimples **inicio, int *elem);
 /*6*/   void DestroiListaLigada(ListaSimples **inicio);
-//*7*/   NoListaSimples *ObterNo(NoListaSimples *noAtual, int indice);
+/*7*/   NoListaSimples *ObterNo(NoListaSimples *noAtual, int indice);
 //*8*/   Pixel *ObterAdjacentes(Pixel P);
 //*9*/   void Dilatacao(NoListaSimples **noAtual, int n, int m);
 //*10*/  void Erosao(NoListaSimples **noAtual, int n, int m) ;
@@ -71,7 +72,10 @@ bool BuscaUltimoElementoListaSimples(ListaSimples *inicio, NoListaSimples **pos,
     }
     return(true);
 }
-
+// 7
+NoListaSimples *ObterNo(NoListaSimples *noAtual, int indice){
+    
+}
 
 bool BuscaElementoListaSimples(ListaSimples *inicio, int elem, NoListaSimples **pos, NoListaSimples **ant){
     *ant = NULL; *pos = inicio;
@@ -87,6 +91,8 @@ bool BuscaElementoListaSimples(ListaSimples *inicio, int elem, NoListaSimples **
 
 
 int main(){
+    
+
     ListaSimples * p = CriaNoSimples(1);
     InserirElementoNoFimLista(&p, 2);
     InserirElementoNoFimLista(&p, 3);
