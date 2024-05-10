@@ -72,9 +72,12 @@ bool BuscaUltimoElementoListaSimples(ListaSimples *inicio, NoListaSimples **pos,
     }
     return(true);
 }
-// 7
+//7 Recebe no e devolve no relativo de acordo com o indice, 0 sendo ele mesmo.
 NoListaSimples *ObterNo(NoListaSimples *noAtual, int indice){
-    
+    for(int aux = 0; aux < indice; aux++){
+        noAtual = &(*noAtual->proximo);
+    }
+    return noAtual;
 }
 
 bool BuscaElementoListaSimples(ListaSimples *inicio, int elem, NoListaSimples **pos, NoListaSimples **ant){
@@ -98,6 +101,8 @@ int main(){
     InserirElementoNoFimLista(&p, 3);
     InserirElementoNoFimLista(&p, 4);
     InserirElementoNoFimLista(&p, 5);
+    ListaSimples * noAtual = p;
+    ListaSimples *QUAL = ObterNo(noAtual, 3);
     ListaSimples *pos, *ant;
     bool found = BuscaElementoListaSimples(p, 4, &pos, &ant);
     bool found2 = BuscaUltimoElementoListaSimples(p, &pos, &ant);
