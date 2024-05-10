@@ -170,11 +170,11 @@ void DestroiImagem(Imagem **img)
 }
 
 // Função para pegar um Nó localizado no indice posicional na Lista Ligada
-NoListaSimples *ObterNo(NoListaSimples *noAtual, int indice)
-{
-    // Área do código
-
-    // Fim da área do código
+NoListaSimples *ObterNo(NoListaSimples *noAtual, int indice){
+    for(int aux = 0; aux < indice; aux++){
+        noAtual = &(*noAtual->proximo);
+    }
+    return noAtual;
 }
 
 Pixel *ObterAdjacentes(Pixel P)
@@ -321,7 +321,7 @@ void PreencherListaLigadaComImagemBinaria(Imagem *imagem_binaria)
     {
         for (int j = 0; j < nlinhas; j++)
         {
-            InserirElementoNoFimLista(&noAtual, imagem_binaria->Posicao[i][j]);
+            InserirElementoNoFimLista(, imagem_binaria->Posicao[i][j]);
         }
     }
 }
