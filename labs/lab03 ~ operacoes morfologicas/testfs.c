@@ -9,7 +9,7 @@ typedef struct no_lista_simples{
 ListaSimples *noAtual = NULL;
 
 
-// IMPLEMENTAÇÕES (5/12) 
+// IMPLEMENTAÇÕES (7/12) 
 
 /*1*/   bool ListaSimplesVazia(ListaSimples *inicio);
 /*2*/   bool BuscaUltimoElementoListaSimples(ListaSimples *inicio, NoListaSimples **pos, NoListaSimples **ant);
