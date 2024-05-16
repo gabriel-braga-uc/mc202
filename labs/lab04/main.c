@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 typedef struct _node_ {
     char in;
+    int grau;
     struct _node_ *esq;
     struct _node_ *dir;
 } node;
@@ -12,9 +14,23 @@ node * createNode(char in);
 void CreateNodePutLeft(char in, node ** root);
 void CreateNodePutRight(char in, node ** root);
 node *CreateFromPreAndIn(node ** p, char *pre, char *in);
+int altura(node *T);
+void VisitaOrdemSimetrica(node *T, char **s);
 
+
+void VisitaOrdemSimetrica(node *T, char **s){
+  if (T != NULL) {
+    VisitaOrdemSimetrica(T->esq, s);
+    printf("\n%c: %d", T->in, T->grau);
+    (*s) = (*s) + strlen(*s);
+    VisitaOrdemSimetrica(T->dir, s);
+  }
+}
 node * createNode(char c){
     node * p = (node*)calloc(1, sizeof(node));
+    p->grau = 0;
+    p->dir = NULL;
+    p->esq = NULL;
     p->in = c;
     return p;
 }
@@ -59,12 +75,33 @@ node *CreateFromPreAndIn(node ** p, char *pre, char *in){
     }
     root->esq = CreateFromPreAndIn(&root, out1, out2);
     root->dir = CreateFromPreAndIn(&root, out3, out4);
+    if(root->dir != NULL){
+        root->grau++;
+    }
+    if(root->esq != NULL){
+        root->grau++;
+    }
     return root;
 }
+int altura(node * root) {
+    // Get the height of the tree
+    if (root == NULL)
+        return 0;
+    else {
+        int hesq = altura(root->esq);
+        int hdir = altura(root->dir);
+        if (hesq >= hdir)
+            return hesq + 1;
+        else
+            return hdir + 1;
+    }
+}
 int main(){
-    char * pre = "ABCEFDGHIJK";
-    char * in =  "EFCBGDHAIJK";
+    char * pre = "ABDHIEJKCFLMGNO";
+    char * in =  "HDIBJEKALFMCNGO";
     node * p = CreateFromPreAndIn(&p, pre, in);
-    printf("%c", p->esq->dir->dir->in); 
+    //printf("%c\n", p->esq->dir->dir->in); 
+    printf("Altura da arvore: %d", altura(p));
+    VisitaOrdemSimetrica(p, &in);
     return 0;
 }
