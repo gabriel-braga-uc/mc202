@@ -29,7 +29,7 @@ int main(int argc, char **argv)
   n = strlen(argv[1]);
   T = ConstroiArvoreBinariaSimPos(argv[1], argv[2], n); 
 
-  ImprimeArvoreBinaria(T,0,Altura(T));
+  ImprimeArvoreBinaria(T,0,Altura>rs(T));
     
   s = (char *)calloc(n,sizeof(char));
   percurso = s;
