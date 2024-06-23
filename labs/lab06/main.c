@@ -14,12 +14,12 @@ typedef struct _heap {
   int *info;              /* informação e prioridade ao mesmo tempo */
   int  nelems, maxsize;   /* número de elementos no heap e o tamanho do vetor */
   char ** ip;
-  float *lat;
+  char **lat;
 } Heap;
 
 Heap   *CriaHeap(int maxsize);
 void    DestroiHeap(Heap **H);
-void    InsereHeap(Heap *H, int info, char * ip, float lat);
+void    InsereHeap(Heap *H, int info, char * ip, char * lat);
 int     RemoveHeap(Heap *H);
 Boolean HeapCheio(Heap *H);
 Boolean HeapVazio(Heap *H);
@@ -41,7 +41,7 @@ Heap *CriaHeap(int maxsize)
   H->nelems  = 0;
   H->info    = (int *)calloc(H->maxsize,sizeof(int));
   H->ip      = (char**)calloc(H->maxsize, sizeof(char*));
-  H->lat      = (float *)calloc(H->maxsize, sizeof(float));
+  H->lat     = (char**)calloc(H->maxsize, sizeof(char*));
   return(H);
 }
 
@@ -166,7 +166,7 @@ void ImprimeHeap(Heap *H, int indice, int nivel)
 
 /*   O (logn) */
 
-void InsereHeap(Heap *H, int info, char * ip, float lat) 
+void InsereHeap(Heap *H, int info, char * ip, char * lat) 
 { 
   if (!HeapCheio(H)) {
     H->nelems += 1;
@@ -244,30 +244,25 @@ int main(int argc,char * argv[]){
     nips = atoi(fgets(tempstr, 32, fp));
     free(tempstr);
     Heap * p = CriaHeap(nips);
-    printf("\n%d\n", nips);
+    //printf("\n%d\n", nips);
     for(int i = 1; i <= nips; i++){
         char * tempstr = (char*)calloc(32, sizeof(char));
         tempstr = fgets(tempstr, 32, fp);
+        //printf("%s\n", tempstr);
+        //char * ip = (char*)calloc(35, sizeof(char));
         char * ip = strtok(tempstr, " ");
+        //printf("%s\n", ip);
         char * prio = strtok(NULL, " ");
         char * lat = strtok(NULL, " ");
-        InsereHeap(p, atoi(prio), ip, strtof(lat, NULL));
-        printf("%s %d %s", ip, atoi(prio), lat);
-        free(ip); free(prio); free(lat);
-        printf("\n%d\n", i);
+        InsereHeap(p, atoi(prio), ip, lat);
+        //printf("%s %d %s", ip, atoi(prio), lat);
+        //free(ip); free(prio); free(lat);
+        //printf("\n%d\n", i);
     }
-    printf("%s\n", p->ip[0]);
-    printf("%s\n", p->ip[1]);
-    printf("%s\n", p->ip[2]);
-    printf("%s\n", p->ip[3]);
-    printf("%s\n", p->ip[4]);
-    printf("%s\n", p->ip[5]);
-    printf("%s\n", p->ip[6]);
-    printf("%s\n", p->ip[7]);
-    printf("%s\n", p->ip[8]);
-    printf("%s\n", p->ip[9]);
-    printf("%s\n", p->ip[10]);
-    printf("%s\n", p->ip[11]);
+    printf("1) Sequencia Lida\n");
+    for(int i = 1; i <= nips; i++){
+      printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
+    }
     fclose(fp);
     return 0;
 }
