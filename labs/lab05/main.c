@@ -418,12 +418,13 @@ int main(int argc,char *argv[]){
     char q;
     NoAVL * ab;
     FILE * fp;
+    
     fp = fopen(argv[1], "r");
     if(fp != NULL){
       char * n = (char*)calloc(52, sizeof(char));
     fgets(n, 52, fp);
     int n1 = atoi(n);
-    free(n);
+  //  free(n);
     for(int i = 1; i <= n1; i++){
         char * n = (char*)calloc(52, sizeof(char));
         fgets(n, 52, fp);
@@ -435,9 +436,9 @@ int main(int argc,char *argv[]){
         } else{
             InsereValor(&ab, n4, &t, part1);
         }
-        free(n);
-        free(part1);
-        free(part2);
+       // free(n);
+     //   free(part1);
+      //  free(part2);
     }
     
     int maxcaminho1 = 1 + Altura(ab->dir) + Altura(ab->esq);
@@ -465,10 +466,13 @@ int main(int argc,char *argv[]){
         } else {
             InsereValor(&ab, atoi(part3), &t, part2);
         }
-        free(n); free(part1); free(part2); free(part3);
+        //free(n); 
+ //       free(part1); 
+  //      free(part2); 
+   //     free(part3);
     }
     fclose(fp);
-    printf("\n[INFO] Apos construcao:\n");
+    printf("\n[INFO] Apos atualizacao:\n");
     VisitaPreOrdem(ab);
     if(Altura(ab)*12 != n1){
         printf("Arvore nao esta cheia\n");
