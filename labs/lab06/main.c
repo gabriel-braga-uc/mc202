@@ -274,10 +274,10 @@ int main(int argc,char * argv[]){
     for(int i = 1; i <= nips; i++){
       printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
     }
-    HeapSort(p);
-    printf("\n\n2) Heap maximo construido\nImprimindo heap\n");
-    for(int i = 1; i <= nips; i++){
-      printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
-    }
+    //HeapSort(p);
+    //printf("\n\n2) Heap maximo construido\nImprimindo heap\n");
+    //for(int i = 1; i <= nips; i++){
+    //  printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
+    //}
     return 0;
 }
