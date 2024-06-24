@@ -3,7 +3,6 @@
 #include <malloc.h>
 #include <math.h>
 #include <string.h>
-
 #define Pai(i) ((i-1)/2)
 #define FilhoEsquerdo(i) (2*i+1)
 #define FilhoDireito(i) (2*i+2)
@@ -13,14 +12,12 @@ typedef enum{false,true} Boolean;
 typedef struct _heap {
   int *info;              /* informação e prioridade ao mesmo tempo */
   int  nelems, maxsize;   /* número de elementos no heap e o tamanho do vetor */
-  char ** ip;
-  char **lat;
 } Heap;
 
 Heap   *CriaHeap(int maxsize);
-void    InsereHeap(Heap *H, int info, char * ip, char * lat);
+void    DestroiHeap(Heap **H);
+void    InsereHeap(Heap *H, int info);
 int     RemoveHeap(Heap *H);
-int     RemoveHeapMin(Heap *H);
 Boolean HeapCheio(Heap *H);
 Boolean HeapVazio(Heap *H);
 void    ImprimeHeap(Heap *H, int indice, int nivel);
@@ -28,10 +25,9 @@ void    ConstroiHeap1(Heap *H);
 void    ConstroiHeap2(Heap *H);
 void    HeapSort(Heap *H);
 void    SobeHeap(Heap *H, int i);
+void    DesceHeapRecursivo(Heap *H, int i);
 void    DesceHeap(Heap *H, int i);
-void    Troca(int *xinfo, int *yinfo, char * xip, char * yip, char * xlat, char * ylat);
-
-
+void    Troca(int *x, int *y);
 Heap *CriaHeap(int maxsize)
 {
   Heap *H = (Heap *)calloc(1,sizeof(Heap));
@@ -39,30 +35,52 @@ Heap *CriaHeap(int maxsize)
   H->maxsize = maxsize;
   H->nelems  = 0;
   H->info    = (int *)calloc(H->maxsize,sizeof(int));
-  H->ip      = (char**)calloc(H->maxsize, sizeof(char*));
-  H->lat     = (char**)calloc(H->maxsize, sizeof(char*));
+
   return(H);
 }
 
-void Troca(int *xinfo, int *yinfo, char * xip, char * yip, char * xlat, char * ylat)
+void DestroiHeap(Heap **H)
+{
+  if (*H != NULL){
+    free((*H)->info);
+    free(*H);
+    *H = NULL;
+  }
+}
+
+void Troca(int *x, int *y)
 { 
   int aux;
-  aux = *xinfo;  
-  *xinfo  = *yinfo;
-  *yinfo  = aux;
+  aux = *x;  *x   = *y;  *y   = aux;
 
-  char * aux2;
-  aux2 = xip;
-  xip = yip;
-  yip = aux2;
-
-  char * aux3;
-  aux3 = xlat;
-  xlat = ylat;
-  ylat = aux3;
 }
 
 /*   O (logn) */
+
+void DesceHeapRecursivo (Heap *H, int i)
+{ 
+ int maior,esq,dir;
+
+ esq = FilhoEsquerdo(i);
+ dir = FilhoDireito(i);
+
+ if ((esq < H->nelems)&&(H->info[esq] > H->info[i]))
+   maior = esq;
+ else
+   maior = i;
+
+ if ((dir < H->nelems)&&(H->info[dir] > H->info[maior]))
+   maior = dir;
+
+ if (maior != i){
+   Troca(&H->info[i],&H->info[maior]);
+   DesceHeapRecursivo(H,maior);		
+ }
+
+}
+
+/*   O (logn) */
+
 void DesceHeap (Heap *H, int i)
 { 
  int     maior,esq,dir;
@@ -82,7 +100,7 @@ void DesceHeap (Heap *H, int i)
      maior = dir;
 
    if (maior != i){
-     Troca(&H->info[i], &H->info[maior], H->ip[i], H->ip[maior], H->lat[i], H->lat[maior]);
+     Troca(&H->info[i],&H->info[maior]);
      i = maior;
    }else
      continua = false;
@@ -99,7 +117,7 @@ void SobeHeap(Heap *H, int i)
   pai = Pai(i);
   
   while ((pai >= 0) && (H->info[pai] < H->info[i])){
-    Troca(&H->info[i],&H->info[pai], H->ip[i], H->ip[pai], H->lat[i], H->lat[pai]);
+    Troca(&H->info[i],&H->info[pai]);
     i   = pai;
     pai = Pai(i);
   }
@@ -128,12 +146,10 @@ void ImprimeHeap(Heap *H, int indice, int nivel)
 
   if (indice < H->nelems){ 
     ImprimeHeap(H,FilhoDireito(indice),nivel+1);
-    printf("         ");
     for (i=0; i < nivel; i++) 
-      printf("         ");
-    printf("[%d]",H->info[indice]);
-    printf("(%s)[%.2f]", H->ip[indice], atof(H->lat[indice]));
-    for (i=0; i+1 <= (int)log2(H->nelems)-nivel; i++) 
+      printf("   ");
+    printf("%03d",H->info[indice]);
+    for (i=0; i <= (int)log2(H->nelems)-nivel; i++) 
       printf("---");
     printf("\n");
     ImprimeHeap(H,FilhoEsquerdo(indice),nivel+1);
@@ -143,15 +159,14 @@ void ImprimeHeap(Heap *H, int indice, int nivel)
 
 /*   O (logn) */
 
-void InsereHeap(Heap *H, int info, char * ip, char * lat) 
+void InsereHeap(Heap *H, int info) 
 { 
   if (!HeapCheio(H)) {
     H->nelems += 1;
     H->info[H->nelems-1] = info;
-    H->lat[H->nelems-1] = lat;
-    H->ip[H->nelems-1] = ip;
     SobeHeap(H,H->nelems-1);
   }
+
 }
 
 /*   O (logn) */
@@ -162,7 +177,7 @@ int RemoveHeap(Heap *H)
 
   if (!HeapVazio(H)) {
     info        = H->info[0];
-    Troca(&(H->info[H->nelems-1]),&(H->info[0]), (H->ip[0]),(H->ip[H->nelems-1]), (H->lat[0]), (H->lat[H->nelems-1]));
+    Troca(&(H->info[0]),&(H->info[H->nelems-1]));
     H->nelems--;
     DesceHeap(H,0);
   }
@@ -203,7 +218,7 @@ void ConstroiHeap2 (Heap *H)
 
 void HeapSort(Heap *H)
 {
- int i, n = H->nelems;
+ int i,n = H->nelems;
 
  ConstroiHeap2(H);
  for (i=0; i < n; i++)
@@ -211,9 +226,16 @@ void HeapSort(Heap *H)
  H->nelems = n;
  
 }
+int * returnReversedInt(int arr[], int size)
+{
+    int * reversedArr = (int*)calloc(size, sizeof(int));
+    for (int i = 0; i < size; i++) {
+        reversedArr[i] = arr[size - i - 1];
+    }
+    return reversedArr;
+}
 
 int main(int argc,char * argv[]){
-    printf("1) Sequencia Lida\n");
     char * tempstr = (char*)calloc(32, sizeof(char));
     int nips;
     FILE * fp;
@@ -226,18 +248,24 @@ int main(int argc,char * argv[]){
         char * tempstr = (char*)calloc(32, sizeof(char));
         tempstr = fgets(tempstr, 32, fp);
         printf("%s", tempstr);
-
         char * ip = strtok(tempstr, " ");
-        char * prio = strtok(NULL, " ");
+        int prio = atoi(strtok(NULL, " "));
         char * lat = strtok(NULL, " ");
-        InsereHeap(p, atoi(prio), ip, lat);
+        InsereHeap(p, prio);
     }
-    fclose(fp);
-    ////HeapSort(p);
-    printf("\n\n2) Heap maximo construido\nImprimindo heap\n");
+    ConstroiHeap1(p);
+    for(int i = 0; i < 1000; i++){
+        Troca(&p->info[0], &p->info[p->maxsize-1]);
+        SobeHeap(p, p->maxsize-1);
+    }
+    HeapSort(p);
+    printf("\n");
+    Heap * pmax = CriaHeap(p->maxsize);
+    int * reversedp = (int*)calloc(p->maxsize, sizeof(int));
+    reversedp = returnReversedInt(p->info, p->maxsize);
+    p->info = reversedp;
+    //printf("%d", reversedp[0]);
     ImprimeHeap(p, 0, 0);
-    //for(int i = 1; i <= nips; i++){
-    //  printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
-    //}
+    fclose(fp);
     return 0;
 }
