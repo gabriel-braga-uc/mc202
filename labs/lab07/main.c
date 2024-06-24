@@ -130,7 +130,7 @@ int main(int argc, char * argv[]){
         //distanciaDijkstra[raiz] = 0;
     }
 
-    void dijkstras(nnos, ymatriz, distanciaDijkstra, paiDijkstra, visitado);
+    dijkstras(nnos, ymatriz, distanciaDijkstra, paiDijkstra, visitadoDijkstra);
     printf("Grafo tem %d componentes", componentes);
     return 0;
 }
