@@ -114,7 +114,7 @@ int main(int argc,char * argv[]){
         printf("%s %d %.2f\n", p->ip[i], p->info[i], p->lat[i]);
     }
     fclose(fp);
-    for(int k = 0; k < 10; k++){
+    for(int k = 0; k < 100; k++){
         for(int i = maxsize-1; i > 0; i--){
             //printf("%d\n", i);
             //printf("%s %d %.2f\n", p->ip[i], p->info[i], p->lat[i]);
@@ -237,22 +237,71 @@ int main(int argc,char * argv[]){
     printf("\n2) Heap maximo construido\nImprimindo heap\n");
     ImprimeHeap(p, 1, 0);
     //printf("%d\n", maxsize);
-    printf("3) Removendo elementos do heap por ordem de prioridade e restricao de latencia");
+    printf("3) Removendo elementos do heap por ordem de prioridade e restricao de latencia\n");
+    int esq, dir;
     for(int i = 1; i < maxsize; i++){
         printf("Removido elemento de prioridade %d com valor de latencia %f e valor de IP %s\n", p->info[1], p->lat[1], p->ip[1]);
         
-        int    aux1 = p->info[1];
-        float  aux2 = p->lat[1];
-        char * aux3 = p->ip[1];
+        //int    aux1 = p->info[1];
+        //float  aux2 = p->lat[1];
+        //char * aux3 = p->ip[1];
         
-        p->info[1]  = p->info[maxsize-1];
-        p->lat[1]   = p->lat[maxsize-1];
-        p->ip[1]    = p->ip[maxsize-1];
+        p->info[1]  = p->info[p->nelems];
+        p->lat[1]   = p->lat[p->nelems];
+        p->ip[1]    = p->ip[p->nelems];
+        
+        for(int k = 0; k < 10; k++){
+            for(int i = 1; i < p->nelems; i++){
+                DesceHeap(p, 1);
+            }
+        }
+        for(int k = 0; k < 10; k++){
+            for(int i = 1; i < p->nelems; i++){
+                DesceHeap(p, 1);
+            }
+        }
         p->nelems--;
-        p->maxsize--;
+        if (p->nelems > 0){
+            printf("Imprimindo heap\n");
+        }
+        for(int k = 0; k < 3; k++){
+            for(int i = 1; i < p->nelems; i++){
+                esq = FilhoEsquerdo(i);
+                dir = FilhoDireito(i);
+                if(esq <= p->nelems){
+                    if((p->info[esq] == p->info[i]) && p->lat[i] > p->lat[esq]){
+                        //printf("    UJBLBIHJSUFEDLBJFIHSEWLBIGFWEALBGFBLUIWELBIJUGHF");
+                        int    aux1 = p->info[i];
+                        float  aux2 = p->lat[i];
+                        char * aux3 = p->ip[i];
 
-        DesceHeap(p, 1);
-        printf("Imprimindo heap\n");
+                        p->info[i] = p->info[FilhoEsquerdo(i)];
+                        p->lat[i]  = p->lat[FilhoEsquerdo(i)];
+                        p->ip[i]   = p->ip[FilhoEsquerdo(i)];
+
+                        p->info[FilhoEsquerdo(i)] = aux1;
+                        p->lat[FilhoEsquerdo(i)]  = aux2;
+                        p->ip[FilhoEsquerdo(i)]   = aux3;
+                    }
+                }
+                if(dir <= p->nelems){
+                    if((p->info[dir] == p->info[i]) && p->lat[i] > p->lat[dir]){
+                        //printf("    UJBLBIHJSUFEDLBJFIHSEWLBIGFWEALBGFBLUIWELBIJUGHF");
+                        int    aux1 = p->info[i];
+                        float  aux2 = p->lat[i];
+                        char * aux3 = p->ip[i];
+
+                        p->info[i] = p->info[FilhoDireito(i)];
+                        p->lat[i]  = p->lat[FilhoDireito(i)];
+                        p->ip[i]   = p->ip[FilhoDireito(i)];
+
+                        p->info[FilhoDireito(i)] = aux1;
+                        p->lat[FilhoDireito(i)]  = aux2;
+                        p->ip[FilhoDireito(i)]   = aux3;
+                    }
+                }
+            }
+        }
         ImprimeHeap(p, 1, 0);
     }
     return 0;
