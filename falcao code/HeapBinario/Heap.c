@@ -23,7 +23,6 @@ void DestroiHeap(Heap **H)
 void Troca(int *x, int *y)
 { 
   int aux;
-
   aux = *x;  *x   = *y;  *y   = aux;
 
 }

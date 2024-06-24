@@ -162,10 +162,12 @@ void ImprimeHeap(Heap *H, int indice, int nivel)
 
   if (indice < H->nelems){ 
     ImprimeHeap(H,FilhoDireito(indice),nivel+1);
+    printf("         ");
     for (i=0; i < nivel; i++) 
-      printf("   ");
-    printf("%03d",H->info[indice]);
-    for (i=0; i <= (int)log2(H->nelems)-nivel; i++) 
+      printf("         ");
+    printf("[%d]",H->info[indice]);
+    printf("(%s)[%.2f]", H->ip[indice], atof(H->lat[indice]));
+    for (i=0; i+1 <= (int)log2(H->nelems)-nivel; i++) 
       printf("---");
     printf("\n");
     ImprimeHeap(H,FilhoEsquerdo(indice),nivel+1);
@@ -262,20 +264,24 @@ int main(int argc,char * argv[]){
         //printf("%s\n", ip);
         char * prio = strtok(NULL, " ");
         char * lat = strtok(NULL, " ");
-        printf("%s ", prio);
-        printf("%d ", atoi(prio));
+        //printf("%s ", prio);
+        //printf("%d ", atoi(prio));
         InsereHeap(p, atoi(prio), ip, lat);
         //printf("%s %d %s", ip, atoi(prio), lat);
         //free(ip); free(prio); free(lat);
         //printf("\n%d\n", i);
     }
     fclose(fp);
-    printf("1) Sequencia Lida\n");
-    for(int i = 1; i <= nips; i++){
-      printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
-    }
-    //HeapSort(p);
+    //printf("1) Sequencia Lida\n");
+    //for(int i = 1; i <= nips; i++){
+    //  printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
+    //}
+    ////HeapSort(p);
     //printf("\n\n2) Heap maximo construido\nImprimindo heap\n");
+    ImprimeHeap(p, 0, 0);
+    HeapSort(p);
+    printf("\n----------------------------------------\n");
+    ImprimeHeap(p, 0, 0);
     //for(int i = 1; i <= nips; i++){
     //  printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
     //}

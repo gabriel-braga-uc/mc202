@@ -498,11 +498,11 @@ int main(int argc,char *argv[]){
     VisitaPreOrdem(ab);
     if(tamanhoCheia(Altura(ab)+1) == n1){
         printf("Arvore esta cheia\n");
-        printf("A rota mais longa possivel passa por %d nos\n", Altura(ab)*2);
+        //printf("A rota mais longa possivel passa por %d nos\n", Altura(ab)*2);
 
     } else {
         printf("Arvore nao esta cheia\n");
-        printf("A rota mais longa possivel passa por %d nos\n", Altura(ab)*2 - 1);
+        //printf("A rota mais longa possivel passa por %d nos\n", Altura(ab)*2 - 1);
     }
     }
     return 0;
