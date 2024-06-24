@@ -10,15 +10,18 @@
 
 typedef enum{false,true} Boolean;
 
+typedef struct _NO {
+  int info;
+  char * ip;
+  float * lat;
+} no;
+
 typedef struct _heap {
-  int *info;              /* informação e prioridade ao mesmo tempo */
   int  nelems, maxsize;   /* número de elementos no heap e o tamanho do vetor */
-  char ** ip;
-  char **lat;
+  no * nos;
 } Heap;
 
 Heap   *CriaHeap(int maxsize);
-void    DestroiHeap(Heap **H);
 void    InsereHeap(Heap *H, int info, char * ip, char * lat);
 int     RemoveHeap(Heap *H);
 int     RemoveHeapMin(Heap *H);
@@ -29,9 +32,8 @@ void    ConstroiHeap1(Heap *H);
 void    ConstroiHeap2(Heap *H);
 void    HeapSort(Heap *H);
 void    SobeHeap(Heap *H, int i);
-void    DesceHeapRecursivo(Heap *H, int i);
 void    DesceHeap(Heap *H, int i);
-void    Troca(int *xinfo, int *yinfo, char ** xip, char ** yip, char ** xlat, char ** ylat);
+void    Troca(no *xinfo, no *yinfo);
 
 
 Heap *CriaHeap(int maxsize)
@@ -39,63 +41,19 @@ Heap *CriaHeap(int maxsize)
   Heap *H = (Heap *)calloc(1,sizeof(Heap));
   
   H->maxsize = maxsize;
+  H->nos = (no*)calloc(maxsize, sizeof(no));
   H->nelems  = 0;
-  H->info    = (int *)calloc(H->maxsize,sizeof(int));
-  H->ip      = (char**)calloc(H->maxsize, sizeof(char*));
-  H->lat     = (char**)calloc(H->maxsize, sizeof(char*));
   return(H);
 }
 
-void DestroiHeap(Heap **H)
-{
-  if (*H != NULL){
-    free((*H)->info);
-    free(*H);
-    *H = NULL;
-  }
-}
-
-void Troca(int *xinfo, int *yinfo, char ** xip, char ** yip, char ** xlat, char ** ylat)
+void Troca(no *xinfo, no *yinfo)
 { 
-  int aux;
-  aux = *xinfo;  
-  *xinfo  = *yinfo;
-  *yinfo  = aux;
-
-  char ** aux2;
-  aux2 = xip;
-  *xip = *yip;
-  *yip = *aux2;
-
-  char ** aux3;
-  aux3 = xlat;
-  *xlat = *ylat;
-  *ylat = *aux3;
+  no * aux;
+  aux = xinfo;  
+  xinfo = yinfo;
+  yinfo = aux;
 }
 
-/*   O (logn) */
-
-void DesceHeapRecursivo (Heap *H, int i)
-{ 
- int maior,esq,dir;
-
- esq = FilhoEsquerdo(i);
- dir = FilhoDireito(i);
-
- if ((esq < H->nelems)&&(H->info[esq] > H->info[i]))
-   maior = esq;
- else
-   maior = i;
-
- if ((dir < H->nelems)&&(H->info[dir] > H->info[maior]))
-   maior = dir;
-
- if (maior != i){
-   Troca(&H->info[i],&H->info[maior], &H->ip[i], &H->ip[maior], &H->lat[i], &H->lat[maior]);
-   DesceHeapRecursivo(H,maior);		
- }
-
-}
 
 /*   O (logn) */
 
@@ -197,8 +155,8 @@ int RemoveHeap(Heap *H)
   int info;
 
   if (!HeapVazio(H)) {
-    info        = H->info[0];
-    Troca(&(H->info[H->nelems-1]),&(H->info[0]), &(H->ip[0]),&(H->ip[H->nelems-1]), &(H->lat[0]),&(H->lat[H->nelems-1]));
+    info        = H->nos[0].info;
+    Troca(&(H->nos[H->nelems-1]), &(H->nos[0]));
     H->nelems--;
     DesceHeap(H,0);
   }
@@ -249,6 +207,7 @@ void HeapSort(Heap *H)
 }
 
 int main(int argc,char * argv[]){
+    printf("1) Sequencia Lida\n");
     char * tempstr = (char*)calloc(32, sizeof(char));
     int nips;
     FILE * fp;
@@ -260,6 +219,7 @@ int main(int argc,char * argv[]){
     for(int i = 1; i <= nips; i++){
         char * tempstr = (char*)calloc(32, sizeof(char));
         tempstr = fgets(tempstr, 32, fp);
+        printf("%s", tempstr);
         //printf("%s\n", tempstr);
         //char * ip = (char*)calloc(35, sizeof(char));
         char * ip = strtok(tempstr, " ");
@@ -274,10 +234,6 @@ int main(int argc,char * argv[]){
         //printf("\n%d\n", i);
     }
     fclose(fp);
-    printf("1) Sequencia Lida\n");
-    for(int i = 1; i <= nips; i++){
-      printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
-    }
     ////HeapSort(p);
     printf("\n\n2) Heap maximo construido\nImprimindo heap\n");
     ImprimeHeap(p, 0, 0);

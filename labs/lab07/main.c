@@ -9,7 +9,7 @@ typedef struct _point {
     int x;
     int y;
 } ponto;
-float distancia(int x1, int y1, int x2, int y2);
+float distancia(float x1, float y1, float x2, float y2);
 void dijkstras(int nnos, float ** custo, float * D, int * pai, bool * visitado);
 int encontraProximo(int nnos, bool * visitado, float * D);
 
@@ -19,7 +19,7 @@ int retornaIndice(float lista[100], int nnos, int indexban){
     int index;
     float min = 999;
     for(int i = 1; i <= nnos; i++){
-        if (lista[i] < min && lista[i] != 999 && i != indexban){
+        if (lista[i] < min && lista[i] != 999){
             min = lista[i];
             index = i; 
         }
@@ -52,7 +52,7 @@ void dijkstras(int nnos, float ** custo, float * D, int * pai, bool * visitado){
     }
 }
 
-float distancia(int x1, int y1, int x2, int y2){
+float distancia(float x1, float y1, float x2, float y2){
     return(sqrt(pow((x2-x1), 2) + pow((y2-y1), 2)));
 }
 
@@ -64,9 +64,9 @@ int main(int argc, char * argv[]){
     int nnos = atoi(fgets(tempstr, 32, fp));
     // printf("%d\n", nnos); /*debug*/
     float ** ymatriz = (float**)calloc(nnos, sizeof(float*));
-    ponto * pontos = (ponto*)calloc(nnos, sizeof(ponto));
+    ponto * pontos = (ponto*)calloc(nnos+1, sizeof(ponto));
     for(int i = 0; i <= nnos; i++){
-        ymatriz[i] = (float*)calloc(nnos, sizeof(float));
+        ymatriz[i] = (float*)calloc(nnos+1, sizeof(float));
     }
     free(tempstr);
     for(int i = 1; i <= nnos; i++){
@@ -95,66 +95,74 @@ int main(int argc, char * argv[]){
 
     for(int i = 1; i <= nnos; i++){
         for(int j = 1; j <= nnos; j++){
-            tempdist = distancia(pontos[i].x, pontos[i].y, pontos[j].x, pontos[j].y);
+            printf("%f \n", tempdist);
+            tempdist = distancia((float)pontos[i].x, (float)pontos[i].y, (float)pontos[j].x, (float)pontos[j].y);
             if(tempdist <= 2){
-                ymatriz[i][j] = tempdist;
+                //ymatriz[i][j] = tempdist;
             }else if (tempdist > 2){
-                ymatriz[i][j] = 999;
+                //ymatriz[i][j] = 999;
             }
         }
     }
     fclose(fp);
-    printf("Matriz de adjacencia:\n");
-    for(int i = 0; i <= nnos; i++){
-        for(int j = 0; j <= nnos; j++){
-            if(i == 0 && j == 0){
-            } else if(i == 0 || j == 0){
-                if(i == 0){
-                    printf("\t%c", (int)ymatriz[0][j]);
-                }
-                if(j == 0){
-                    printf("%c", (int)ymatriz[i][0]);
-                }
-            } else {
-                if(ymatriz[i][j] == 0){
-                    printf("\t%d", (int)(ymatriz[i][j]));
-                } else{
-                    if(ymatriz[i][j] == 999){
-                        printf("\t0");
-                    } else {
-                        printf("\t%.3f", ymatriz[i][j]);
-                    }
-                }
-            }
-        }
-        printf("\n");
-    }
+    //printf("Matriz de adjacencia:\n");
+    //for(int i = 0; i <= nnos; i++){
+    //    for(int j = 0; j <= nnos; j++){
+    //        if(i == 0 && j == 0){
+    //        } else if(i == 0 || j == 0){
+    //            if(i == 0){
+    //                printf("\t%c", (int)ymatriz[0][j]);
+    //            }
+    //            if(j == 0){
+    //                printf("%c", (int)ymatriz[i][0]);
+    //            }
+    //        } else {
+    //            if(ymatriz[i][j] == 0){
+    //                printf("\t%d", (int)(ymatriz[i][j]));
+    //            } else{
+    //                if(ymatriz[i][j] == 999){
+    //                    printf("\t0");
+    //                } else {
+    //                    printf("\t%.3f", ymatriz[i][j]);
+    //                }
+    //            }
+    //        }
+    //    }
+    //    printf("\n");
+    //}
     int componentes = 1;
     printf("Percurso mínimo:\n");
 
-    int * paiDijkstra = (int*)calloc(100, sizeof(int));
-    float * distanciaDijkstra = (float*)calloc(100, sizeof(float));
-    float * distanciaDijkstraClone = (float*)calloc(100, sizeof(float));
-    bool * visitadoDijkstra = (bool*)calloc(100, sizeof(bool));
-
     int raiz;
     for(int k = 1; k <= nnos; k++){
-        raiz = k;
+        
+        int * paiDijkstra = (int*)calloc(50, sizeof(int));
+        float * distanciaDijkstra = (float*)calloc(50, sizeof(float));
+        float * distanciaDijkstraClone = (float*)calloc(50, sizeof(float));
+        bool * visitadoDijkstra = (bool*)calloc(50, sizeof(bool));
+        
         for(int i = 1; i <= nnos; i++){
             distanciaDijkstra[i] = 999;
-            distanciaDijkstra[raiz] = 0;
         }
+        distanciaDijkstra[k] = 0;
+        
         dijkstras(nnos, ymatriz, distanciaDijkstra, paiDijkstra, visitadoDijkstra);
         for(int i = 1; i <= nnos; i++){
             distanciaDijkstraClone[i] = distanciaDijkstra[i];
         }
+////
+        free(paiDijkstra); free(distanciaDijkstra); free(visitadoDijkstra);
+////
         printf("Percurso [No %c]:", (int)ymatriz[0][k]);
-        for(int i = 1; i < nnos; i++){
-            int indextemp = retornaIndice(distanciaDijkstraClone, nnos, 1);
-            printf("%d, ", indextemp);
-            printf(" (%c %f) ", (int)ymatriz[0][indextemp], distanciaDijkstra[indextemp]);
-            distanciaDijkstraClone[indextemp] = 999;
-        }
+    //    //int indextemp;
+    //    //for(int i = 1; i <= nnos; i++){
+    //    //    indextemp = retornaIndice(distanciaDijkstraClone, nnos, i);
+    //    //    //printf("%d, ", indextemp);
+    //    //    if((int)ymatriz[0][k] != (int)ymatriz[0][indextemp])
+    //    //        printf(" (%c %f) ", (int)ymatriz[0][indextemp], distanciaDijkstraClone[indextemp]);
+    //    //    distanciaDijkstraClone[indextemp] = 999;
+    //    //}
+        free(distanciaDijkstraClone);
         printf("\n");
     }
     printf("Grafo tem %d componentes", componentes);
