@@ -10,11 +10,41 @@ typedef struct _point {
     int y;
 } ponto;
 
+float distancia(int x1, int y1, int x2, int y2);
+void dijkstras(int nnos, float ** custo, float * D, int * pai, bool * visitado);
+int encontraProximo(int nnos, bool * visitado, float * D);
+
+int encontraProximo(int nnos, bool * visitado, float * D){
+    int minimoV = 999;
+    int minimoN = 0;
+    for(int i = 1; i <= nnos; i++){
+        if(!visitado[i] && D[i] < minimoV){
+            minimoV = D[i];
+            minimoN = i;
+        }
+    }
+    return minimoN;
+}
+void dijkstras(int nnos, float ** custo, float * D, int * pai, bool * visitado){
+    for(int i = 1; i <= nnos; i++){
+        int proximoNaoVisitado = encontraProximo(nnos, visitado, D);
+        visitado[proximoNaoVisitado] = true;
+
+        for(int adj = 1; adj <= nnos; adj++){
+            if(custo[proximoNaoVisitado][adj] != 999 && D[adj] > D[proximoNaoVisitado] + custo[proximoNaoVisitado][adj]){
+                D[adj] = D[proximoNaoVisitado] + custo[proximoNaoVisitado][adj];
+                pai[adj] = proximoNaoVisitado;
+            }
+        }
+    }
+}
+
 float distancia(int x1, int y1, int x2, int y2){
     return(sqrt(pow((x2-x1), 2) + pow((y2-y1), 2)));
 }
 
 int main(int argc, char * argv[]){
+
     char * tempstr = (char*)calloc(32, sizeof(char));
     FILE * fp;
     fp = fopen(argv[1], "r");
@@ -55,6 +85,8 @@ int main(int argc, char * argv[]){
             tempdist = distancia(pontos[i].x, pontos[i].y, pontos[j].x, pontos[j].y);
             if(tempdist <= 2){
                 ymatriz[i][j] = tempdist;
+            }else if (tempdist > 2){
+                ymatriz[i][j] = 999;
             }
         }
     }
@@ -74,7 +106,11 @@ int main(int argc, char * argv[]){
                 if(ymatriz[i][j] == 0){
                     printf("\t%d", (int)(ymatriz[i][j]));
                 } else{
-                    printf("\t%.3f", ymatriz[i][j]);
+                    if(ymatriz[i][j] == 999){
+                        printf("\t0");
+                    } else {
+                        printf("\t%.3f", ymatriz[i][j]);
+                    }
                 }
             }
         }
@@ -82,38 +118,19 @@ int main(int argc, char * argv[]){
     }
     int componentes = 1;
     printf("Percurso mínimo:\n");
-    bool ilha;
-    float ** minimos = (float**)calloc(nnos, sizeof(float*));
+
+    int * paiDijkstra = (int*)calloc(100, sizeof(int));
+    float * distanciaDijkstra = (float*)calloc(100, sizeof(float));
+    bool * visitadoDijkstra = (bool*)calloc(100, sizeof(bool));
+
+    int raiz;
+
     for(int i = 1; i <= nnos; i++){
-        minimos[i] = (float*)calloc(nnos, sizeof(float));
-        for(int j = 1; j <= nnos; j++){
-            minimos[i][j] = 999888999;
-        }
+        distanciaDijkstra[i] = 999;
+        //distanciaDijkstra[raiz] = 0;
     }
-    for(int k = 1; k <= nnos; k++){
-        if()
-    }
-    //for(int i = 1; i <= nnos; i++){
-    //    printf("Percurso [No %c]: ", pontos[i].nome);
-    //    bool add = true;
- //
-    //    /*TOP Identifica Ilha*/
-    //    ilha = true;
-    //    for(int j = 1; j <= nnos; j++){
-    //        if(ymatriz[j][i] != 0){
-    //            ilha = false;
-    //            break;
-    //        }
-    //    }
-    //    if(ilha){
-    //        componentes++;
-    //        printf(" E uma ilha");
-    //    }
-    //    /*BOTTOM Identifica Ilha */
-    //    
-    //    printf("\n");
-    //    
-    //}
+
+    void dijkstras(nnos, ymatriz, distanciaDijkstra, paiDijkstra, visitado);
     printf("Grafo tem %d componentes", componentes);
     return 0;
 }
