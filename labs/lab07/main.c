@@ -86,25 +86,34 @@ int main(int argc, char * argv[]){
     float ** minimos = (float**)calloc(nnos, sizeof(float*));
     for(int i = 1; i <= nnos; i++){
         minimos[i] = (float*)calloc(nnos, sizeof(float));
-    }
-    for(int i = 1; i <= nnos; i++){
-        printf("Percurso [No %c]: ", pontos[i].nome);
-
-        /*TOP Identifica Ilha*/
-        ilha = true;
         for(int j = 1; j <= nnos; j++){
-            if(ymatriz[j][i] != 0){
-                ilha = false;
-                break;
-            }
+            minimos[i][j] = 999888999;
         }
-        if(ilha){
-            componentes++;
-            printf(" E uma ilha");
-        }
-        /*BOTTOM Identifica Ilha */
-        
-        printf("\n");
     }
+    for(int k = 1; k <= nnos; k++){
+        if()
+    }
+    //for(int i = 1; i <= nnos; i++){
+    //    printf("Percurso [No %c]: ", pontos[i].nome);
+    //    bool add = true;
+ //
+    //    /*TOP Identifica Ilha*/
+    //    ilha = true;
+    //    for(int j = 1; j <= nnos; j++){
+    //        if(ymatriz[j][i] != 0){
+    //            ilha = false;
+    //            break;
+    //        }
+    //    }
+    //    if(ilha){
+    //        componentes++;
+    //        printf(" E uma ilha");
+    //    }
+    //    /*BOTTOM Identifica Ilha */
+    //    
+    //    printf("\n");
+    //    
+    //}
+    printf("Grafo tem %d componentes", componentes);
     return 0;
 }
