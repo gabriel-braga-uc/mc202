@@ -16,8 +16,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Gabriel/Documents/GitHub/mc202/labs/lab05",
-      "program": "c:/Users/Gabriel/Documents/GitHub/mc202/labs/lab05/build/Debug/outDebug",
+      "cwd": "c:/Users/Gabriel/Documents/GitHub/mc202/labs/lab07",
+      "program": "c:/Users/Gabriel/Documents/GitHub/mc202/labs/lab07/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
