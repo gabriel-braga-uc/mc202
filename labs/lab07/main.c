@@ -68,7 +68,6 @@ int main(int argc, char * argv[]){
     for(int i = 0; i <= nnos; i++){
         ymatriz[i] = (float*)calloc(nnos+1, sizeof(float));
     }
-    free(tempstr);
     for(int i = 1; i <= nnos; i++){
         char * tempstr = (char*)calloc(32, sizeof(char));
         tempstr = (fgets(tempstr, 32, fp));
@@ -84,7 +83,6 @@ int main(int argc, char * argv[]){
 
         ymatriz[0][i] = (float)*noNome;
         ymatriz[i][0] = (float)*noNome;
-        free(tempstr);
     }
     float tempdist;
     
@@ -104,7 +102,6 @@ int main(int argc, char * argv[]){
             }
         }
     }
-    fclose(fp);
     //printf("Matriz de adjacencia:\n");
     //for(int i = 0; i <= nnos; i++){
     //    for(int j = 0; j <= nnos; j++){
@@ -134,13 +131,11 @@ int main(int argc, char * argv[]){
     printf("Percurso mínimo:\n");
 
     int raiz;
+    int * paiDijkstra = (int*)calloc(50, sizeof(int));
+    float * distanciaDijkstra = (float*)calloc(50, sizeof(float));
+    float * distanciaDijkstraClone = (float*)calloc(50, sizeof(float));
+    bool * visitadoDijkstra = (bool*)calloc(50, sizeof(bool));
     for(int k = 1; k <= nnos; k++){
-        
-        int * paiDijkstra = (int*)calloc(50, sizeof(int));
-        float * distanciaDijkstra = (float*)calloc(50, sizeof(float));
-        float * distanciaDijkstraClone = (float*)calloc(50, sizeof(float));
-        bool * visitadoDijkstra = (bool*)calloc(50, sizeof(bool));
-        
         for(int i = 1; i <= nnos; i++){
             distanciaDijkstra[i] = 999;
         }
@@ -150,21 +145,19 @@ int main(int argc, char * argv[]){
         for(int i = 1; i <= nnos; i++){
             distanciaDijkstraClone[i] = distanciaDijkstra[i];
         }
-////
-        free(paiDijkstra); free(distanciaDijkstra); free(visitadoDijkstra);
-////
+
         printf("Percurso [No %c]:", (int)ymatriz[0][k]);
-    //    //int indextemp;
-    //    //for(int i = 1; i <= nnos; i++){
-    //    //    indextemp = retornaIndice(distanciaDijkstraClone, nnos, i);
-    //    //    //printf("%d, ", indextemp);
-    //    //    if((int)ymatriz[0][k] != (int)ymatriz[0][indextemp])
-    //    //        printf(" (%c %f) ", (int)ymatriz[0][indextemp], distanciaDijkstraClone[indextemp]);
-    //    //    distanciaDijkstraClone[indextemp] = 999;
-    //    //}
-        free(distanciaDijkstraClone);
+        int indextemp;
+        for(int i = 1; i <= nnos; i++){
+            indextemp = retornaIndice(distanciaDijkstraClone, nnos, i);
+            //printf("%d, ", indextemp);
+            if((int)ymatriz[0][k] != (int)ymatriz[0][indextemp])
+                printf(" (%c %f) ", (int)ymatriz[0][indextemp], distanciaDijkstraClone[indextemp]);
+            distanciaDijkstraClone[indextemp] = 999;
+        }
         printf("\n");
     }
+    fclose(fp);
     printf("Grafo tem %d componentes", componentes);
     return 0;
 }
