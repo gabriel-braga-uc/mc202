@@ -30,7 +30,7 @@ void    HeapSort(Heap *H);
 void    SobeHeap(Heap *H, int i);
 void    DesceHeapRecursivo(Heap *H, int i);
 void    DesceHeap(Heap *H, int i);
-void    Troca(int *x, int *y);
+void    Troca(int *xinfo, int *yinfo, char ** xip, char ** yip, char ** xlat, char ** ylat);
 
 
 Heap *CriaHeap(int maxsize)
@@ -54,12 +54,21 @@ void DestroiHeap(Heap **H)
   }
 }
 
-void Troca(int *x, int *y)
+void Troca(int *xinfo, int *yinfo, char ** xip, char ** yip, char ** xlat, char ** ylat)
 { 
   int aux;
+  aux = *xinfo;  
+  *xinfo  = *yinfo;
+  *yinfo  = aux;
 
-  aux = *x;  *x   = *y;  *y   = aux;
+  //char * aux2;
+  //aux2 = strcpy(aux2, *xip);
+  //**xip  = **yip;
+  //**yip  = *aux2;
 
+  //char * aux3 = strcpy(aux3, *xlat);
+  //**xlat  = **ylat;
+  //**ylat  = *aux3;
 }
 
 /*   O (logn) */
@@ -80,7 +89,7 @@ void DesceHeapRecursivo (Heap *H, int i)
    maior = dir;
 
  if (maior != i){
-   Troca(&H->info[i],&H->info[maior]);
+   Troca(&H->info[i],&H->info[maior], &H->ip[i], &H->ip[maior], &H->lat[i], &H->lat[maior]);
    DesceHeapRecursivo(H,maior);		
  }
 
@@ -107,7 +116,7 @@ void DesceHeap (Heap *H, int i)
      maior = dir;
 
    if (maior != i){
-     Troca(&H->info[i],&H->info[maior]);
+     Troca(&H->info[i],&H->info[maior], &H->ip[i],&H->ip[maior], &H->lat[i],&H->lat[maior]);
      i = maior;
    }else
      continua = false;
@@ -124,7 +133,7 @@ void SobeHeap(Heap *H, int i)
   pai = Pai(i);
   
   while ((pai >= 0) && (H->info[pai] < H->info[i])){
-    Troca(&H->info[i],&H->info[pai]);
+    Troca(&H->info[i],&H->info[pai], &H->ip[i],&H->ip[pai], &H->lat[i],&H->lat[pai]);
     i   = pai;
     pai = Pai(i);
   }
@@ -175,7 +184,6 @@ void InsereHeap(Heap *H, int info, char * ip, char * lat)
     H->ip[H->nelems-1] = ip;
     SobeHeap(H,H->nelems-1);
   }
-
 }
 
 /*   O (logn) */
@@ -186,7 +194,7 @@ int RemoveHeap(Heap *H)
 
   if (!HeapVazio(H)) {
     info        = H->info[0];
-    Troca(&(H->info[0]),&(H->info[H->nelems-1]));
+    Troca(&(H->info[0]),&(H->info[H->nelems-1]), &(H->ip[0]),&(H->ip[H->nelems-1]), &(H->lat[0]),&(H->lat[H->nelems-1]));
     H->nelems--;
     DesceHeap(H,0);
   }
@@ -254,15 +262,22 @@ int main(int argc,char * argv[]){
         //printf("%s\n", ip);
         char * prio = strtok(NULL, " ");
         char * lat = strtok(NULL, " ");
+        printf("%s ", prio);
+        printf("%d ", atoi(prio));
         InsereHeap(p, atoi(prio), ip, lat);
         //printf("%s %d %s", ip, atoi(prio), lat);
         //free(ip); free(prio); free(lat);
         //printf("\n%d\n", i);
     }
+    fclose(fp);
     printf("1) Sequencia Lida\n");
     for(int i = 1; i <= nips; i++){
       printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
     }
-    fclose(fp);
+    HeapSort(p);
+    printf("\n\n2) Heap maximo construido\nImprimindo heap\n");
+    for(int i = 1; i <= nips; i++){
+      printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
+    }
     return 0;
 }
