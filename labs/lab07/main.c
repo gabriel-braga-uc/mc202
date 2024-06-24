@@ -124,13 +124,15 @@ int main(int argc, char * argv[]){
     bool * visitadoDijkstra = (bool*)calloc(100, sizeof(bool));
 
     int raiz;
-
-    for(int i = 1; i <= nnos; i++){
-        distanciaDijkstra[i] = 999;
-        //distanciaDijkstra[raiz] = 0;
+    for(int k = 1; k <= nnos; k++){
+        raiz = k;
+        for(int i = 1; i <= nnos; i++){
+            distanciaDijkstra[i] = 999;
+            distanciaDijkstra[raiz] = 0;
+        }
+        dijkstras(nnos, ymatriz, distanciaDijkstra, paiDijkstra, visitadoDijkstra);
+        printf("%c", )
     }
-
-    dijkstras(nnos, ymatriz, distanciaDijkstra, paiDijkstra, visitadoDijkstra);
     printf("Grafo tem %d componentes", componentes);
     return 0;
 }
