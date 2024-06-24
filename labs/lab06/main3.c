@@ -5,7 +5,7 @@
 #define Pai(i) ((i-1)/2)
 #define FilhoEsquerdo(i) (2*i)
 #define FilhoDireito(i) (2*i+1)
-
+typedef enum{false,true} Boolean;
 typedef struct _heap {
   int *info;              /* informação e prioridade ao mesmo tempo */
   float *lat;
@@ -15,7 +15,41 @@ typedef struct _heap {
 
 Heap *CriaHeap(int maxsize);
 void ImprimeHeap(Heap *H, int indice, int nivel);
+void DesceHeapRecursivo (Heap *H, int i);
 
+void DesceHeap (Heap *H, int i)
+{ 
+    int     maior,esq,dir;
+    Boolean continua=true;
+
+    while (continua) { 
+
+        esq = FilhoEsquerdo(i);
+        dir = FilhoDireito(i);
+
+    if ((esq < H->nelems)&&(H->info[esq] > H->info[i]))
+        maior = esq;
+    else
+        maior = i;
+
+    if ((dir < H->nelems)&&(H->info[dir] > H->info[maior]))
+        maior = dir;
+
+    if (maior != i){
+        int    aux1     =   H->info[i];
+        float  aux2     =   H->lat[i];
+        char * aux3     =   H->ip[i];
+        H->info[i]      =   H->info[maior];
+        H->lat[i]       =   H->lat[maior];
+        H->ip[i]        =   H->ip[maior];
+        H->info[maior]  =   aux1;
+        H->lat[maior]   =   aux2;
+        H->ip[maior]    =   aux3;
+        i = maior;
+    }else
+        continua = false;
+    }
+}
 void ImprimeHeap(Heap *H, int indice, int nivel)
 { 
   int i;
@@ -205,8 +239,21 @@ int main(int argc,char * argv[]){
     //printf("%d\n", maxsize);
     printf("3) Removendo elementos do heap por ordem de prioridade e restricao de latencia");
     for(int i = 1; i < maxsize; i++){
-        printf("%d\n", i);
+        printf("Removido elemento de prioridade %d com valor de latencia %f e valor de IP %s\n", p->info[1], p->lat[1], p->ip[1]);
+        
+        int    aux1 = p->info[1];
+        float  aux2 = p->lat[1];
+        char * aux3 = p->ip[1];
+        
+        p->info[1]  = p->info[maxsize-1];
+        p->lat[1]   = p->lat[maxsize-1];
+        p->ip[1]    = p->ip[maxsize-1];
+        p->nelems--;
+        p->maxsize--;
+
+        DesceHeap(p, 1);
+        printf("Imprimindo heap\n");
+        ImprimeHeap(p, 1, 0);
     }
-    printf("Removido elemento de prioridade %d com valor de latencia %f e valor de IP %s", p->info[1], p->lat[1], p->ip[1]);
     return 0;
 }
