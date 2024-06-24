@@ -9,10 +9,23 @@ typedef struct _point {
     int x;
     int y;
 } ponto;
-
 float distancia(int x1, int y1, int x2, int y2);
 void dijkstras(int nnos, float ** custo, float * D, int * pai, bool * visitado);
 int encontraProximo(int nnos, bool * visitado, float * D);
+
+int retornaIndice(float lista[100], int nnos);
+
+int retornaIndice(float lista[100], int nnos){
+    int index;
+    int min = lista[1];
+    for(int i = 1; i <= nnos; i++){
+        if (lista[i] < min){
+            min = lista[i];
+            index = i; 
+        }
+    }
+    return index;
+}
 
 int encontraProximo(int nnos, bool * visitado, float * D){
     int minimoV = 999;
@@ -131,7 +144,9 @@ int main(int argc, char * argv[]){
             distanciaDijkstra[raiz] = 0;
         }
         dijkstras(nnos, ymatriz, distanciaDijkstra, paiDijkstra, visitadoDijkstra);
-        printf("%c", )
+        printf("Percurso [No %c]:", (int)ymatriz[0][k]);
+        
+        printf("\n");
     }
     printf("Grafo tem %d componentes", componentes);
     return 0;
