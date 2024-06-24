@@ -21,6 +21,7 @@ Heap   *CriaHeap(int maxsize);
 void    DestroiHeap(Heap **H);
 void    InsereHeap(Heap *H, int info, char * ip, char * lat);
 int     RemoveHeap(Heap *H);
+int     RemoveHeapMin(Heap *H);
 Boolean HeapCheio(Heap *H);
 Boolean HeapVazio(Heap *H);
 void    ImprimeHeap(Heap *H, int indice, int nivel);
@@ -61,14 +62,15 @@ void Troca(int *xinfo, int *yinfo, char ** xip, char ** yip, char ** xlat, char 
   *xinfo  = *yinfo;
   *yinfo  = aux;
 
-  //char * aux2;
-  //aux2 = strcpy(aux2, *xip);
-  //**xip  = **yip;
-  //**yip  = *aux2;
+  char ** aux2;
+  aux2 = xip;
+  *xip = *yip;
+  *yip = *aux2;
 
-  //char * aux3 = strcpy(aux3, *xlat);
-  //**xlat  = **ylat;
-  //**ylat  = *aux3;
+  char ** aux3;
+  aux3 = xlat;
+  *xlat = *ylat;
+  *ylat = *aux3;
 }
 
 /*   O (logn) */
@@ -196,7 +198,7 @@ int RemoveHeap(Heap *H)
 
   if (!HeapVazio(H)) {
     info        = H->info[0];
-    Troca(&(H->info[0]),&(H->info[H->nelems-1]), &(H->ip[0]),&(H->ip[H->nelems-1]), &(H->lat[0]),&(H->lat[H->nelems-1]));
+    Troca(&(H->info[H->nelems-1]),&(H->info[0]), &(H->ip[0]),&(H->ip[H->nelems-1]), &(H->lat[0]),&(H->lat[H->nelems-1]));
     H->nelems--;
     DesceHeap(H,0);
   }
@@ -237,7 +239,7 @@ void ConstroiHeap2 (Heap *H)
 
 void HeapSort(Heap *H)
 {
- int i,n = H->nelems;
+ int i, n = H->nelems;
 
  ConstroiHeap2(H);
  for (i=0; i < n; i++)
@@ -272,15 +274,12 @@ int main(int argc,char * argv[]){
         //printf("\n%d\n", i);
     }
     fclose(fp);
-    //printf("1) Sequencia Lida\n");
-    //for(int i = 1; i <= nips; i++){
-    //  printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
-    //}
+    printf("1) Sequencia Lida\n");
+    for(int i = 1; i <= nips; i++){
+      printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
+    }
     ////HeapSort(p);
-    //printf("\n\n2) Heap maximo construido\nImprimindo heap\n");
-    ImprimeHeap(p, 0, 0);
-    HeapSort(p);
-    printf("\n----------------------------------------\n");
+    printf("\n\n2) Heap maximo construido\nImprimindo heap\n");
     ImprimeHeap(p, 0, 0);
     //for(int i = 1; i <= nips; i++){
     //  printf("%s %d %s", p->ip[i-1], p->info[i-1], p->lat[i-1]);
