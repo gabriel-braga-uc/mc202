@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
 #include <math.h>
 #include <string.h>
 #define Pai(i) ((i-1)/2)
@@ -61,11 +60,11 @@ int main(int argc,char * argv[]){
     Heap * p = CriaHeap(maxsize);
     free(tempstr);
 
+    char*  tempstr2  = (char*)calloc(31, sizeof(char));
+    char*  ip       = (char*)calloc(31, sizeof(char));
     for(int i = 1; i < maxsize; i++){
-        char*  tempstr  = (char*)calloc(31, sizeof(char));
-        char*  ip       = (char*)calloc(31, sizeof(char));
         
-        ip = strtok(fgets(tempstr, 31, fp), " ");
+        ip = strtok(fgets(tempstr2, 31, fp), " ");
         info = atoi(strtok(NULL, " "));
         lat  = strtof(strtok(NULL, " "), NULL);
 
@@ -73,17 +72,14 @@ int main(int argc,char * argv[]){
         p->info[i]  = info;
         p->lat[i]   = lat;
 
-        free(ip);
-        free(tempstr);
     }
-    fclose(fp);
 
     printf("1) Sequencia Lida\n");
     for(int i = 1; i < maxsize; i++){
         p->nelems++;
         printf("%s %d %.2f\n", p->ip[i], p->info[i], p->lat[i]);
     }
-    //printf("NELEMS: %d", p->nelems);
+    fclose(fp);
     for(int k = 0; k < 10; k++){
         for(int i = maxsize-1; i > 0; i--){
             //printf("%d\n", i);
@@ -98,34 +94,34 @@ int main(int argc,char * argv[]){
                     p->info[i]  = p->info[FilhoEsquerdo(i)];
                     p->lat[i]   = p->lat[FilhoEsquerdo(i)];
                     p->ip[i]    = p->ip[FilhoEsquerdo(i)];
-
+//
                     p->info[FilhoEsquerdo(i)] = aux1;
                     p->lat[FilhoEsquerdo(i)]  = aux2;
                     p->ip[FilhoEsquerdo(i)]   = aux3;                
-
+//
                 } else if((FilhoEsquerdo(i) >= maxsize && FilhoDireito(i) < maxsize)  && p->info[FilhoDireito(i)] > p->info[i]){
                         int    aux1 = p->info[i];
                         float  aux2 = p->lat[i];
                         char * aux3 = p->ip[i];
-
+//
                         p->info[i] = p->info[FilhoDireito(i)];
                         p->lat[i]  = p->lat[FilhoDireito(i)];
                         p->ip[i]   = p->ip[FilhoDireito(i)];
-
+//
                         p->info[FilhoDireito(i)] = aux1;
                         p->lat[FilhoDireito(i)]  = aux2;
                         p->ip[FilhoDireito(i)]   = aux3;                
-
+//
                 } else if(FilhoEsquerdo(i) < maxsize && FilhoDireito(i) < maxsize){
                     if((p->info[FilhoEsquerdo(i)] > p->info[FilhoDireito(i)]) && p->info[FilhoEsquerdo(i)] > p->info[i]){
                         int    aux1 = p->info[i];
                         float  aux2 = p->lat[i];
                         char * aux3 = p->ip[i];
-
+//
                         p->info[i] = p->info[FilhoEsquerdo(i)];
                         p->lat[i]  = p->lat[FilhoEsquerdo(i)];
                         p->ip[i]   = p->ip[FilhoEsquerdo(i)];
-
+//
                         p->info[FilhoEsquerdo(i)] = aux1;
                         p->lat[FilhoEsquerdo(i)]  = aux2;
                         p->ip[FilhoEsquerdo(i)]   = aux3;
@@ -133,11 +129,11 @@ int main(int argc,char * argv[]){
                         int    aux1 = p->info[i];
                         float  aux2 = p->lat[i];
                         char * aux3 = p->ip[i];
-
+//
                         p->info[i] = p->info[FilhoDireito(i)];
                         p->lat[i]  = p->lat[FilhoDireito(i)];
                         p->ip[i]   = p->ip[FilhoDireito(i)];
-
+//
                         p->info[FilhoDireito(i)] = aux1;
                         p->lat[FilhoDireito(i)]  = aux2;
                         p->ip[FilhoDireito(i)]   = aux3;
@@ -146,7 +142,7 @@ int main(int argc,char * argv[]){
             }
         }
     }
-
+//
     /*DEBUG*/
     //printf("\n - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - \n\n");
     //for(int i = 1; i < maxsize; i++){
