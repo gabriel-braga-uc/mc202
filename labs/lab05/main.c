@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <string.h>
+#include <math.h>
 
 #define MAX(a,b) ((a > b)?a:b)
 #define TAM_MAX 100
@@ -15,6 +16,7 @@ typedef struct NoAVL {  /* Registro que representa n� em �rvore
 } NoAVL, AVL;
 NoAVL *CriaNovoNo(int info, char ip[30]); 
 void InsereValor(AVL **ab, int valor, char *mais_alta, char ip[30]); 
+void RemoveValor(AVL **ab, int valor, char *mais_baixa);
 void TrataAumentoArvoreDireita(AVL **ab, char *mais_alta);
 void RotacaoSimplesEsquerda(AVL **ab);
 void AjusteBalancoSimplesInsercao(NoAVL *A, NoAVL *B);
@@ -24,6 +26,7 @@ void RotacaoSimplesDireita(AVL **ab);
 void RotacaoDuplaDireita(AVL **ab);
 void RotacaoDuplaEsquerda(AVL **ab);
 void VisitaPreOrdem(AVL *ab);
+int VisitaPreOrdem2(AVL *ab);
 int Altura(AVL *ab);
 void RemoveDeFato(AVL **ab, char *mais_baixa);
 
@@ -36,6 +39,16 @@ void SubstituiRemoveMenorSucessor(AVL **ab, AVL **maisesq, char *mais_baixa);
 void TrataReducaoArvoreEsquerda(AVL **ab, char *mais_baixa);
 void TrataReducaoArvoreDireita(AVL **ab, char *mais_baixa);
 
+int tamanhoCheia(int termo);
+
+int tamanhoCheia(int termo){
+    if(termo == 1){
+        return 0;
+    }
+    else{
+        return(tamanhoCheia(termo-1)+pow(2, termo-2));
+    }
+}
 
 void RotacaoSimplesDireita(AVL **ab)
 {
@@ -287,7 +300,16 @@ void VisitaPreOrdem(AVL *ab)
     VisitaPreOrdem(ab->dir);
   }
 }
-
+int VisitaPreOrdem2(AVL *ab)
+{
+  int sum = 0;
+  if (ab != NULL) {
+    sum++;
+    VisitaPreOrdem(ab->esq);
+    VisitaPreOrdem(ab->dir);
+  }
+  return sum;
+}
 void RemoveValor(AVL **ab, int valor, char *mais_baixa)
 {
   if ((*ab) != NULL){  
@@ -474,13 +496,14 @@ int main(int argc,char *argv[]){
     fclose(fp);
     printf("\n[INFO] Apos atualizacao:\n");
     VisitaPreOrdem(ab);
-    if(Altura(ab)*12 != n1){
-        printf("Arvore nao esta cheia\n");
+    if(tamanhoCheia(Altura(ab)+1) == n1){
+        printf("Arvore esta cheia\n");
+        printf("A rota mais longa possivel passa por %d nos\n", Altura(ab)*2);
+
     } else {
         printf("Arvore nao esta cheia\n");
+        printf("A rota mais longa possivel passa por %d nos\n", Altura(ab)*2 - 1);
     }
-    int maxcaminho2 = 1 + Altura(ab->dir) + Altura(ab->esq);
-    printf("A rota mais longa possivel passa por %d nos\n", maxcaminho2);
     }
     return 0;
 }
