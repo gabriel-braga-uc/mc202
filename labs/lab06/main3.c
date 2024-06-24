@@ -113,7 +113,35 @@ int main(int argc,char * argv[]){
                         p->ip[FilhoDireito(i)]   = aux3;                
 //
                 } else if(FilhoEsquerdo(i) < maxsize && FilhoDireito(i) < maxsize){
-                    if((p->info[FilhoEsquerdo(i)] > p->info[FilhoDireito(i)]) && p->info[FilhoEsquerdo(i)] > p->info[i]){
+                    if((p->info[FilhoEsquerdo(i)] == p->info[FilhoDireito(i)])){
+                        if(p->info[FilhoEsquerdo(i)] >= p->info[i]){
+                            if(p->lat[FilhoEsquerdo(i)] < p->lat[FilhoDireito(i)]){
+                                int    aux1 = p->info[i];
+                                float  aux2 = p->lat[i];
+                                char * aux3 = p->ip[i];
+//      
+                                p->info[i] = p->info[FilhoEsquerdo(i)];
+                                p->lat[i]  = p->lat[FilhoEsquerdo(i)];
+                                p->ip[i]   = p->ip[FilhoEsquerdo(i)];
+//      
+                                p->info[FilhoEsquerdo(i)] = aux1;
+                                p->lat[FilhoEsquerdo(i)]  = aux2;
+                                p->ip[FilhoEsquerdo(i)]   = aux3;
+                            } else{
+                                int    aux1 = p->info[i];
+                                float  aux2 = p->lat[i];
+                                char * aux3 = p->ip[i];
+//      
+                                p->info[i] = p->info[FilhoDireito(i)];
+                                p->lat[i]  = p->lat[FilhoDireito(i)];
+                                p->ip[i]   = p->ip[FilhoDireito(i)];
+//      
+                                p->info[FilhoDireito(i)] = aux1;
+                                p->lat[FilhoDireito(i)]  = aux2;
+                                p->ip[FilhoDireito(i)]   = aux3;
+                            }
+                        }
+                    } else if((p->info[FilhoEsquerdo(i)] > p->info[FilhoDireito(i)]) && p->info[FilhoEsquerdo(i)] > p->info[i]){
                         int    aux1 = p->info[i];
                         float  aux2 = p->lat[i];
                         char * aux3 = p->ip[i];
@@ -126,6 +154,30 @@ int main(int argc,char * argv[]){
                         p->lat[FilhoEsquerdo(i)]  = aux2;
                         p->ip[FilhoEsquerdo(i)]   = aux3;
                     }else if((p->info[FilhoEsquerdo(i)] < p->info[FilhoDireito(i)]) && p->info[FilhoDireito(i)] > p->info[i]){
+                        int    aux1 = p->info[i];
+                        float  aux2 = p->lat[i];
+                        char * aux3 = p->ip[i];
+//
+                        p->info[i] = p->info[FilhoDireito(i)];
+                        p->lat[i]  = p->lat[FilhoDireito(i)];
+                        p->ip[i]   = p->ip[FilhoDireito(i)];
+//
+                        p->info[FilhoDireito(i)] = aux1;
+                        p->lat[FilhoDireito(i)]  = aux2;
+                        p->ip[FilhoDireito(i)]   = aux3;
+                    }else if(p->info[FilhoEsquerdo(i)] == p->info[i]){
+                        int    aux1 = p->info[i];
+                        float  aux2 = p->lat[i];
+                        char * aux3 = p->ip[i];
+//
+                        p->info[i] = p->info[FilhoEsquerdo(i)];
+                        p->lat[i]  = p->lat[FilhoEsquerdo(i)];
+                        p->ip[i]   = p->ip[FilhoEsquerdo(i)];
+//
+                        p->info[FilhoEsquerdo(i)] = aux1;
+                        p->lat[FilhoEsquerdo(i)]  = aux2;
+                        p->ip[FilhoEsquerdo(i)]   = aux3;
+                    }else if(p->info[FilhoDireito(i)] == p->info[i]){
                         int    aux1 = p->info[i];
                         float  aux2 = p->lat[i];
                         char * aux3 = p->ip[i];
@@ -150,6 +202,11 @@ int main(int argc,char * argv[]){
     //}
     printf("\n2) Heap maximo construido\nImprimindo heap\n");
     ImprimeHeap(p, 1, 0);
-
+    //printf("%d\n", maxsize);
+    printf("3) Removendo elementos do heap por ordem de prioridade e restricao de latencia");
+    for(int i = 1; i < maxsize; i++){
+        printf("%d\n", i);
+    }
+    printf("Removido elemento de prioridade %d com valor de latencia %f e valor de IP %s", p->info[1], p->lat[1], p->ip[1]);
     return 0;
 }
