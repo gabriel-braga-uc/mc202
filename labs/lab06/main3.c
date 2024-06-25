@@ -255,11 +255,6 @@ int main(int argc,char * argv[]){
                 DesceHeap(p, 1);
             }
         }
-        for(int k = 0; k < 10; k++){
-            for(int i = 1; i < p->nelems; i++){
-                DesceHeap(p, 1);
-            }
-        }
         p->nelems--;
         if (p->nelems > 0){
             printf("Imprimindo heap\n");
