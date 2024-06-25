@@ -61,7 +61,8 @@ int main(int argc, char * argv[]){
     char * tempstr = (char*)calloc(32, sizeof(char));
     FILE * fp;
     fp = fopen(argv[1], "r");
-    int nnos = atoi(fgets(tempstr, 32, fp));
+    int nnos;
+    fscanf(fp, "%d\n", &nnos);
     // printf("%d\n", nnos); /*debug*/
     float ** ymatriz = (float**)calloc(nnos, sizeof(float*));
     ponto * pontos = (ponto*)calloc(nnos+1, sizeof(ponto));
@@ -69,20 +70,10 @@ int main(int argc, char * argv[]){
         ymatriz[i] = (float*)calloc(nnos+1, sizeof(float));
     }
     for(int i = 1; i <= nnos; i++){
-        char * tempstr = (char*)calloc(32, sizeof(char));
-        tempstr = (fgets(tempstr, 32, fp));
-        char * noNome = strtok(tempstr, " ");
-        int noX = atoi(strtok(NULL, " "));
-        int noY = atoi(strtok(NULL, " "));
-        pontos[i].x = noX;
-        pontos[i].y = noY;
-        pontos[i].nome = noNome[0];
+        fscanf(fp, "%c %d %d\n", &pontos[i].nome, &pontos[i].x, &pontos[i].y);
 
-        /*debug*/
-        //printf("%f, %d, %d\n", (float)*noNome, noX, noY); /*debug*/
-
-        ymatriz[0][i] = (float)*noNome;
-        ymatriz[i][0] = (float)*noNome;
+        //ymatriz[0][i] = (float)*noNome;
+        //ymatriz[i][0] = (float)*noNome;
     }
     float tempdist;
     
@@ -93,40 +84,40 @@ int main(int argc, char * argv[]){
 
     for(int i = 1; i <= nnos; i++){
         for(int j = 1; j <= nnos; j++){
-            printf("%f \n", tempdist);
+            //printf("%f \n", tempdist);
             tempdist = distancia((float)pontos[i].x, (float)pontos[i].y, (float)pontos[j].x, (float)pontos[j].y);
             if(tempdist <= 2){
-                //ymatriz[i][j] = tempdist;
+                ymatriz[i][j] = tempdist;
             }else if (tempdist > 2){
-                //ymatriz[i][j] = 999;
+                ymatriz[i][j] = 999;
             }
         }
     }
-    //printf("Matriz de adjacencia:\n");
-    //for(int i = 0; i <= nnos; i++){
-    //    for(int j = 0; j <= nnos; j++){
-    //        if(i == 0 && j == 0){
-    //        } else if(i == 0 || j == 0){
-    //            if(i == 0){
-    //                printf("\t%c", (int)ymatriz[0][j]);
-    //            }
-    //            if(j == 0){
-    //                printf("%c", (int)ymatriz[i][0]);
-    //            }
-    //        } else {
-    //            if(ymatriz[i][j] == 0){
-    //                printf("\t%d", (int)(ymatriz[i][j]));
-    //            } else{
-    //                if(ymatriz[i][j] == 999){
-    //                    printf("\t0");
-    //                } else {
-    //                    printf("\t%.3f", ymatriz[i][j]);
-    //                }
-    //            }
-    //        }
-    //    }
-    //    printf("\n");
-    //}
+    printf("Matriz de adjacencia:\n");
+    for(int i = 0; i <= nnos; i++){
+        for(int j = 0; j <= nnos; j++){
+            if(i == 0 && j == 0){
+            } else if(i == 0 || j == 0){
+                if(i == 0){
+                    printf("\t%c", (int)ymatriz[0][j]);
+                }
+                if(j == 0){
+                    printf("%c", (int)ymatriz[i][0]);
+                }
+            } else {
+                if(ymatriz[i][j] == 0){
+                    printf("\t%d", (int)(ymatriz[i][j]));
+                } else{
+                    if(ymatriz[i][j] == 999){
+                        printf("\t0");
+                    } else {
+                        printf("\t%.3f", ymatriz[i][j]);
+                    }
+                }
+            }
+        }
+        printf("\n");
+    }
     int componentes = 1;
     printf("Percurso mínimo:\n");
 
@@ -146,7 +137,7 @@ int main(int argc, char * argv[]){
             distanciaDijkstraClone[i] = distanciaDijkstra[i];
         }
 
-        printf("Percurso [No %c]:", (int)ymatriz[0][k]);
+        printf("Percurso [No %c]:", pontos[k].nome);
         int indextemp;
         for(int i = 1; i <= nnos; i++){
             indextemp = retornaIndice(distanciaDijkstraClone, nnos, i);
