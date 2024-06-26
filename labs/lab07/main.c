@@ -72,8 +72,8 @@ int main(int argc, char * argv[]){
     for(int i = 1; i <= nnos; i++){
         fscanf(fp, "%c %d %d\n", &pontos[i].nome, &pontos[i].x, &pontos[i].y);
 
-        //ymatriz[0][i] = (float)*noNome;
-        //ymatriz[i][0] = (float)*noNome;
+        ymatriz[0][i] = 64 + (float)i;
+        ymatriz[i][0] = 64 + (float)i;
     }
     float tempdist;
     
