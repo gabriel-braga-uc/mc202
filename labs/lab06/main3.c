@@ -27,12 +27,12 @@ void DesceHeap (Heap *H, int i)
         esq = FilhoEsquerdo(i);
         dir = FilhoDireito(i);
 
-    if ((esq < H->nelems)&&(H->info[esq] > H->info[i]))
+    if ((esq < H->nelems)&& (((H->info[esq] > H->info[i]) || ((H->info[esq] == H->info[i]) && (H->lat[esq] == H->lat[i])))))
         maior = esq;
     else
         maior = i;
 
-    if ((dir < H->nelems)&&(H->info[dir] > H->info[maior]))
+    if ((dir < H->nelems)&&((H->info[dir] > H->info[maior]) || ((H->info[dir] == H->info[i]) && (H->lat[dir] == H->lat[i]))))
         maior = dir;
 
     if (maior != i){
@@ -245,7 +245,6 @@ int main(int argc,char * argv[]){
         //int    aux1 = p->info[1];
         //float  aux2 = p->lat[1];
         //char * aux3 = p->ip[1];
-        
         p->info[1]  = p->info[p->nelems];
         p->lat[1]   = p->lat[p->nelems];
         p->ip[1]    = p->ip[p->nelems];
