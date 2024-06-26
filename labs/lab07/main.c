@@ -94,7 +94,12 @@ int main(int argc, char * argv[]){
         }
     }
     printf("Matriz de adjacencia:\n");
-    for(int i = 0; i <= nnos; i++){
+    printf("	");
+    for(int i = 1; i <= nnos-1; i++){
+        printf("%c 	", pontos[i].nome);
+    }
+    printf("%c\n", pontos[nnos].nome);
+    for(int i = 1; i <= nnos; i++){
         for(int j = 0; j <= nnos; j++){
             if(i == 0 && j == 0){
             } else if(i == 0 || j == 0){
@@ -102,7 +107,7 @@ int main(int argc, char * argv[]){
                     printf("\t%c", (int)ymatriz[0][j]);
                 }
                 if(j == 0){
-                    printf("%c", (int)ymatriz[i][0]);
+                    printf("%c", pontos[i].nome);
                 }
             } else {
                 if(ymatriz[i][j] == 0){
