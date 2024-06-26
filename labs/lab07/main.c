@@ -13,9 +13,9 @@ float distancia(float x1, float y1, float x2, float y2);
 void dijkstras(int nnos, float ** custo, float * D, int * pai, bool * visitado);
 int encontraProximo(int nnos, bool * visitado, float * D);
 
-int retornaIndice(float lista[100], int nnos, int indexban);
+int retornaIndice(float lista[100], int nnos);
 
-int retornaIndice(float lista[100], int nnos, int indexban){
+int retornaIndice(float lista[100], int nnos){
     int index;
     float min = 999;
     for(int i = 1; i <= nnos; i++){
@@ -39,8 +39,9 @@ int encontraProximo(int nnos, bool * visitado, float * D){
     return minimoN;
 }
 void dijkstras(int nnos, float ** custo, float * D, int * pai, bool * visitado){
+    int proximoNaoVisitado;
     for(int i = 1; i <= nnos; i++){
-        int proximoNaoVisitado = encontraProximo(nnos, visitado, D);
+        proximoNaoVisitado = encontraProximo(nnos, visitado, D);
         visitado[proximoNaoVisitado] = true;
 
         for(int adj = 1; adj <= nnos; adj++){
@@ -58,41 +59,47 @@ float distancia(float x1, float y1, float x2, float y2){
 
 int main(int argc, char * argv[]){
 
-    char * tempstr = (char*)calloc(32, sizeof(char));
+    bool testailha;
+    bool pode;
+
+    int asciisumold = 0;
+    int asciisumnew = 0;
+    int componentes = 0;
+    int nnos;
+    int * blacklist = (int*)calloc(50, sizeof(int));
+
+    float tempdist;
+    
+
     FILE * fp;
     fp = fopen(argv[1], "r");
-    int nnos;
+
     fscanf(fp, "%d\n", &nnos);
-    // printf("%d\n", nnos); /*debug*/
     float ** ymatriz = (float**)calloc(nnos, sizeof(float*));
     ponto * pontos = (ponto*)calloc(nnos+1, sizeof(ponto));
+
     for(int i = 0; i <= nnos; i++){
         ymatriz[i] = (float*)calloc(nnos+1, sizeof(float));
     }
+
     for(int i = 1; i <= nnos; i++){
         fscanf(fp, "%c %d %d\n", &pontos[i].nome, &pontos[i].x, &pontos[i].y);
-
         ymatriz[0][i] = 64 + (float)i;
         ymatriz[i][0] = 64 + (float)i;
     }
-    float tempdist;
+    fclose(fp);
     
-    /*debug*/
-    //for(int i = 1; i <= nnos; i++){
-    //    printf("%c x:%d y:%d\n", pontos[i].nome, pontos[i].x, pontos[i].y);
-    //}
-
     for(int i = 1; i <= nnos; i++){
         for(int j = 1; j <= nnos; j++){
-            //printf("%f \n", tempdist);
             tempdist = distancia((float)pontos[i].x, (float)pontos[i].y, (float)pontos[j].x, (float)pontos[j].y);
             if(tempdist <= 2){
                 ymatriz[i][j] = tempdist;
             }else if (tempdist > 2){
-                ymatriz[i][j] = 123;
+                ymatriz[i][j] = 123; // Valor coringa pra identificar depois na parte do Dijkstra
             }
         }
     }
+
     printf("Matriz de adjacencia:\n");
     printf("	");
     for(int i = 1; i <= nnos-1; i++){
@@ -123,67 +130,18 @@ int main(int argc, char * argv[]){
         }
         printf("\n");
     }
-    int componentes = 1;
+
     printf("Percurso mínimo:\n");
 
-    
 
-    int temadj, folha = 0;
-    int limite = nnos;
+    float * distanciaDijkstra = (float*)calloc(50, sizeof(float));
+    float * distanciaDijkstraClone = (float*)calloc(50, sizeof(float));
+    int * paiDijkstra = (int*)calloc(50, sizeof(int));
+    bool * visitadoDijkstra = (bool*)calloc(50, sizeof(bool));
 
-    for(int t = 1; t <= nnos; t++){
-        temadj = 0;
-        for(int q = 1; q <= nnos; q++){
-            if(ymatriz[t][q] != 123 && t != q){
-               temadj++;
-            }
-        }
-        if(temadj == 1){
-            folha++;
-        }
-        if(folha > nnos){
-            componentes++;
-        }
-    }
-
-
-    //printf("Matriz de adjacencia:\n");
-    //    printf("	");
-    //    for(int i = 1; i <= nnos-1; i++){
-    //        printf("%c 	", pontos[i].nome);
-    //    }
-    //    printf("%c\n", pontos[nnos].nome);
-    //    for(int i = 1; i <= nnos; i++){
-    //        for(int j = 0; j <= nnos; j++){
-    //            if(i == 0 && j == 0){
-    //            } else if(i == 0 || j == 0){
-    //                if(i == 0){
-    //                    printf("\t%c", (int)ymatriz[0][j]);
-    //                }
-    //                if(j == 0){
-    //                    printf("%c", pontos[i].nome);
-    //                }
-    //            } else {
-    //                if(ymatriz[i][j] == 0){
-    //                    printf("\t%d", (int)(ymatriz[i][j]));
-    //                } else{
-    //                    printf("\t%.3f", ymatriz[i][j]);
-    //                }
-    //            }
-    //        }
-    //        printf("\n");
-    //    }
-
-
-    int raiz;
-    float tempdist2;
-    bool testailha;
-
+    int indextemp;
     for(int k = 1; k <= nnos; k++){
 
-        int * paiDijkstra = (int*)calloc(50, sizeof(int));
-        float * distanciaDijkstra = (float*)calloc(50, sizeof(float));
-        float * distanciaDijkstraClone = (float*)calloc(50, sizeof(float));
         bool * visitadoDijkstra = (bool*)calloc(50, sizeof(bool));
 
         for(int i = 1; i <= nnos; i++){
@@ -198,28 +156,43 @@ int main(int argc, char * argv[]){
         }
 
         printf("Percurso [No %c]:", pontos[k].nome);
-        int indextemp;
         testailha = true;
+        asciisumnew = (int)(pontos[k].nome);
         for(int i = 1; i <= nnos; i++){
-            indextemp = retornaIndice(distanciaDijkstraClone, nnos, i);
+            indextemp = retornaIndice(distanciaDijkstraClone, nnos);
             //printf("%d, ", indextemp);
             if((int)(pontos[k].nome) != (int)(pontos[indextemp].nome) && distanciaDijkstraClone[indextemp] != 123){
                 testailha = false;
+                asciisumnew += (int)(pontos[indextemp].nome);
                 printf(" (%c %f) ", pontos[indextemp].nome, distanciaDijkstraClone[indextemp]);
             }
             distanciaDijkstraClone[indextemp] = 999;
         }
+
+        /*Conta componentes baseado no output do Dijkstra pela soma dos valores ascii dos rotulos dos nós printados a cada linha
+        incluindo o nó raiz, esse valor não muda para nodos conexos. Na hora que muda o componente esse valor muda. Cada componente
+        vai ter um valor unico asssociado a ele dessa maneira*/
         if(testailha){
+            componentes++;
             printf(" E uma ilha");
+        }else if(asciisumnew != asciisumold && !testailha){
+            pode = true;
+            for(int w = 0; w < 50; w++){
+                if(blacklist[w] == asciisumnew){
+                    pode = false;
+                }
+            }
+            if(pode){
+                componentes++;
+            }
+            blacklist[k] = asciisumnew;
         }
-        free(paiDijkstra);
-        free(distanciaDijkstra);
-        free(distanciaDijkstraClone);
+        asciisumold = asciisumnew;
+
         free(visitadoDijkstra);
 
         printf("\n");
     }
-    fclose(fp);
     printf("Grafo tem %d componentes", componentes);
     return 0;
 }
