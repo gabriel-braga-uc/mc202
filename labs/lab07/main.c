@@ -44,7 +44,7 @@ void dijkstras(int nnos, float ** custo, float * D, int * pai, bool * visitado){
         visitado[proximoNaoVisitado] = true;
 
         for(int adj = 1; adj <= nnos; adj++){
-            if(custo[proximoNaoVisitado][adj] != 999 && D[adj] > D[proximoNaoVisitado] + custo[proximoNaoVisitado][adj]){
+            if((int)custo[proximoNaoVisitado][adj] != 999 && D[adj] > D[proximoNaoVisitado] + custo[proximoNaoVisitado][adj]){
                 D[adj] = D[proximoNaoVisitado] + custo[proximoNaoVisitado][adj];
                 pai[adj] = proximoNaoVisitado;
             }
@@ -89,7 +89,7 @@ int main(int argc, char * argv[]){
             if(tempdist <= 2){
                 ymatriz[i][j] = tempdist;
             }else if (tempdist > 2){
-                ymatriz[i][j] = 999;
+                ymatriz[i][j] = 123;
             }
         }
     }
@@ -113,7 +113,7 @@ int main(int argc, char * argv[]){
                 if(ymatriz[i][j] == 0){
                     printf("\t%d", (int)(ymatriz[i][j]));
                 } else{
-                    if(ymatriz[i][j] == 999){
+                    if(ymatriz[i][j] == 123){
                         printf("\t0");
                     } else {
                         printf("\t%.3f", ymatriz[i][j]);
@@ -126,17 +126,72 @@ int main(int argc, char * argv[]){
     int componentes = 1;
     printf("Percurso mínimo:\n");
 
+    
+
+    int temadj, folha = 0;
+    int limite = nnos;
+
+    for(int t = 1; t <= nnos; t++){
+        temadj = 0;
+        for(int q = 1; q <= nnos; q++){
+            if(ymatriz[t][q] != 123 && t != q){
+               temadj++;
+            }
+        }
+        if(temadj == 1){
+            folha++;
+        }
+        if(folha > nnos){
+            componentes++;
+        }
+    }
+
+
+    //printf("Matriz de adjacencia:\n");
+    //    printf("	");
+    //    for(int i = 1; i <= nnos-1; i++){
+    //        printf("%c 	", pontos[i].nome);
+    //    }
+    //    printf("%c\n", pontos[nnos].nome);
+    //    for(int i = 1; i <= nnos; i++){
+    //        for(int j = 0; j <= nnos; j++){
+    //            if(i == 0 && j == 0){
+    //            } else if(i == 0 || j == 0){
+    //                if(i == 0){
+    //                    printf("\t%c", (int)ymatriz[0][j]);
+    //                }
+    //                if(j == 0){
+    //                    printf("%c", pontos[i].nome);
+    //                }
+    //            } else {
+    //                if(ymatriz[i][j] == 0){
+    //                    printf("\t%d", (int)(ymatriz[i][j]));
+    //                } else{
+    //                    printf("\t%.3f", ymatriz[i][j]);
+    //                }
+    //            }
+    //        }
+    //        printf("\n");
+    //    }
+
+
     int raiz;
-    int * paiDijkstra = (int*)calloc(50, sizeof(int));
-    float * distanciaDijkstra = (float*)calloc(50, sizeof(float));
-    float * distanciaDijkstraClone = (float*)calloc(50, sizeof(float));
-    bool * visitadoDijkstra = (bool*)calloc(50, sizeof(bool));
+    float tempdist2;
+    bool testailha;
+
     for(int k = 1; k <= nnos; k++){
+
+        int * paiDijkstra = (int*)calloc(50, sizeof(int));
+        float * distanciaDijkstra = (float*)calloc(50, sizeof(float));
+        float * distanciaDijkstraClone = (float*)calloc(50, sizeof(float));
+        bool * visitadoDijkstra = (bool*)calloc(50, sizeof(bool));
+
         for(int i = 1; i <= nnos; i++){
             distanciaDijkstra[i] = 999;
         }
         distanciaDijkstra[k] = 0;
         
+
         dijkstras(nnos, ymatriz, distanciaDijkstra, paiDijkstra, visitadoDijkstra);
         for(int i = 1; i <= nnos; i++){
             distanciaDijkstraClone[i] = distanciaDijkstra[i];
@@ -144,13 +199,24 @@ int main(int argc, char * argv[]){
 
         printf("Percurso [No %c]:", pontos[k].nome);
         int indextemp;
+        testailha = true;
         for(int i = 1; i <= nnos; i++){
             indextemp = retornaIndice(distanciaDijkstraClone, nnos, i);
             //printf("%d, ", indextemp);
-            if((int)ymatriz[0][k] != (int)ymatriz[0][indextemp])
-                printf(" (%c %f) ", (int)ymatriz[0][indextemp], distanciaDijkstraClone[indextemp]);
+            if((int)(pontos[k].nome) != (int)(pontos[indextemp].nome) && distanciaDijkstraClone[indextemp] != 123){
+                testailha = false;
+                printf(" (%c %f) ", pontos[indextemp].nome, distanciaDijkstraClone[indextemp]);
+            }
             distanciaDijkstraClone[indextemp] = 999;
         }
+        if(testailha){
+            printf(" E uma ilha");
+        }
+        free(paiDijkstra);
+        free(distanciaDijkstra);
+        free(distanciaDijkstraClone);
+        free(visitadoDijkstra);
+
         printf("\n");
     }
     fclose(fp);
