@@ -83,9 +83,17 @@ int main(int argc, char * argv[]){
     }
 
     for(int i = 1; i <= nnos; i++){
-        fscanf(fp, "%c %d %d\n", &pontos[i].nome, &pontos[i].x, &pontos[i].y);
-        ymatriz[0][i] = 64 + (float)i;
-        ymatriz[i][0] = 64 + (float)i;
+        if (i < nnos){
+            fscanf(fp, "%c %d %d\n", &pontos[i].nome, &pontos[i].x, &pontos[i].y);
+            //printf("\n%c: ", pontos[i].nome);
+        }
+        else{
+            fscanf(fp, "%c %d %d", &pontos[i].nome, &pontos[i].x, &pontos[i].y);
+            //printf("\n%c: ", pontos[i].nome);
+        }
+            
+        ymatriz[0][i] = (float)64 + (float)i;
+        ymatriz[i][0] = (float)64 + (float)i;
     }
     fclose(fp);
     
