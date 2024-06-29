@@ -15,7 +15,6 @@ typedef struct _heap {
 
 Heap *CriaHeap(int maxsize);
 void ImprimeHeap(Heap *H, int indice, int nivel);
-void DesceHeapRecursivo (Heap *H, int i);
 
 void DesceHeap (Heap *H, int i)
 { 
@@ -26,13 +25,13 @@ void DesceHeap (Heap *H, int i)
 
         esq = FilhoEsquerdo(i);
         dir = FilhoDireito(i);
-
-    if ((esq < H->nelems)&& (((H->info[esq] > H->info[i]) || ((H->info[esq] == H->info[i]) && (H->lat[esq] == H->lat[i])))))
+    // if(H->info[esq] == H->info[dir] && H->lat[esq] < H->lat[dir])
+    if ((esq < H->nelems) && ((H->info[esq] > H->info[i]) || ((H->info[esq] == H->info[dir] && H->lat[esq] < H->lat[i]))))
         maior = esq;
     else
         maior = i;
 
-    if ((dir < H->nelems)&&((H->info[dir] > H->info[maior]) || ((H->info[dir] == H->info[i]) && (H->lat[dir] == H->lat[i]))))
+    if ((dir < H->nelems) && ((H->info[dir] > H->info[maior]) || ((H->info[maior] == H->info[dir] && H->lat[maior] > H->lat[dir]))))
         maior = dir;
 
     if (maior != i){
@@ -249,11 +248,11 @@ int main(int argc,char * argv[]){
         p->lat[1]   = p->lat[p->nelems];
         p->ip[1]    = p->ip[p->nelems];
         
-        for(int k = 0; k < 10; k++){
-            for(int i = 1; i < p->nelems; i++){
+       // for(int k = 0; k < 11; k++){
+       //     for(int i = 1; i < p->nelems; i++){
                 DesceHeap(p, 1);
-            }
-        }
+        //    }
+        //}
         p->nelems--;
         if (p->nelems > 0){
             printf("Imprimindo heap\n");
